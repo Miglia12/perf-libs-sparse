@@ -1,0 +1,32 @@
+# SPDX-FileCopyrightText: <text>Copyright 2026 Arm Limited and/or its
+# affiliates <open-source-office@arm.com></text>
+#
+# SPDX-License-Identifier: MIT OR Apache-2.0 WITH LLVM-exception
+
+@PACKAGE_INIT@
+
+set(_perflibs_sparse_openblas_dir_hint "@PERFLIBS_OPENBLAS_DIR_HINT@")
+set(_perflibs_sparse_openblas_libraries_hint "@PERFLIBS_OPENBLAS_LIBRARIES_HINT@")
+set(_perflibs_sparse_openblas_include_dirs_hint "@PERFLIBS_OPENBLAS_INCLUDE_DIRS_HINT@")
+
+if(NOT COMMAND perflibs_setup_blas)
+  include("${CMAKE_CURRENT_LIST_DIR}/blas_fallback.cmake")
+endif()
+perflibs_setup_blas(
+  PACKAGE_NAME "@_SPARSE_PACKAGE_NAME@"
+  BLAS_TARGET "@_SPARSE_BLAS_TARGET@"
+  CBLAS_TARGET "@_SPARSE_CBLAS_TARGET@"
+  SPARSE_USE_ARMPL "@SPARSE_USE_ARMPL@"
+  SPARSE_ENABLE_INT64 "@SPARSE_ENABLE_INT64@"
+  ARMPL_LIB_BASENAME "@ARMPL_LIB_BASENAME@"
+  OPENBLAS_DIR_HINT "${_perflibs_sparse_openblas_dir_hint}"
+  OPENBLAS_LIBRARIES_HINT "${_perflibs_sparse_openblas_libraries_hint}"
+  OPENBLAS_INCLUDE_DIRS_HINT "${_perflibs_sparse_openblas_include_dirs_hint}"
+)
+include("${CMAKE_CURRENT_LIST_DIR}/@_SPARSE_EXPORT_NAME@.cmake")
+
+unset(_perflibs_sparse_openblas_dir_hint)
+unset(_perflibs_sparse_openblas_libraries_hint)
+unset(_perflibs_sparse_openblas_include_dirs_hint)
+
+check_required_components(@_SPARSE_PACKAGE_NAME@)

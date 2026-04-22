@@ -1,0 +1,4677 @@
+[
+  {
+    "name": "perflibs_spmat_create_csr_s",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "A",
+        "type": "perflibs_spmat_t *"
+      },
+      {
+        "name": "m",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "n",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "row_ptr",
+        "type": "const perflibs_int_t *"
+      },
+      {
+        "name": "col_indx",
+        "type": "const perflibs_int_t *"
+      },
+      {
+        "name": "vals",
+        "type": "const float *"
+      },
+      {
+        "name": "flags",
+        "type": "perflibs_int_t"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spmat_create_csr_d",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "A",
+        "type": "perflibs_spmat_t *"
+      },
+      {
+        "name": "m",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "n",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "row_ptr",
+        "type": "const perflibs_int_t *"
+      },
+      {
+        "name": "col_indx",
+        "type": "const perflibs_int_t *"
+      },
+      {
+        "name": "vals",
+        "type": "const double *"
+      },
+      {
+        "name": "flags",
+        "type": "perflibs_int_t"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spmat_create_csr_c",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "A",
+        "type": "perflibs_spmat_t *"
+      },
+      {
+        "name": "m",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "n",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "row_ptr",
+        "type": "const perflibs_int_t *"
+      },
+      {
+        "name": "col_indx",
+        "type": "const perflibs_int_t *"
+      },
+      {
+        "name": "vals",
+        "type": "const perflibs_singlecomplex_t *"
+      },
+      {
+        "name": "flags",
+        "type": "perflibs_int_t"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spmat_create_csr_z",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "A",
+        "type": "perflibs_spmat_t *"
+      },
+      {
+        "name": "m",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "n",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "row_ptr",
+        "type": "const perflibs_int_t *"
+      },
+      {
+        "name": "col_indx",
+        "type": "const perflibs_int_t *"
+      },
+      {
+        "name": "vals",
+        "type": "const perflibs_doublecomplex_t *"
+      },
+      {
+        "name": "flags",
+        "type": "perflibs_int_t"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spmat_create_csc_s",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "A",
+        "type": "perflibs_spmat_t *"
+      },
+      {
+        "name": "m",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "n",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "row_indx",
+        "type": "const perflibs_int_t *"
+      },
+      {
+        "name": "col_ptr",
+        "type": "const perflibs_int_t *"
+      },
+      {
+        "name": "vals",
+        "type": "const float *"
+      },
+      {
+        "name": "flags",
+        "type": "perflibs_int_t"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spmat_create_csc_d",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "A",
+        "type": "perflibs_spmat_t *"
+      },
+      {
+        "name": "m",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "n",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "row_indx",
+        "type": "const perflibs_int_t *"
+      },
+      {
+        "name": "col_ptr",
+        "type": "const perflibs_int_t *"
+      },
+      {
+        "name": "vals",
+        "type": "const double *"
+      },
+      {
+        "name": "flags",
+        "type": "perflibs_int_t"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spmat_create_csc_c",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "A",
+        "type": "perflibs_spmat_t *"
+      },
+      {
+        "name": "m",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "n",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "row_indx",
+        "type": "const perflibs_int_t *"
+      },
+      {
+        "name": "col_ptr",
+        "type": "const perflibs_int_t *"
+      },
+      {
+        "name": "vals",
+        "type": "const perflibs_singlecomplex_t *"
+      },
+      {
+        "name": "flags",
+        "type": "perflibs_int_t"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spmat_create_csc_z",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "A",
+        "type": "perflibs_spmat_t *"
+      },
+      {
+        "name": "m",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "n",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "row_indx",
+        "type": "const perflibs_int_t *"
+      },
+      {
+        "name": "col_ptr",
+        "type": "const perflibs_int_t *"
+      },
+      {
+        "name": "vals",
+        "type": "const perflibs_doublecomplex_t *"
+      },
+      {
+        "name": "flags",
+        "type": "perflibs_int_t"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spmat_create_coo_s",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "A",
+        "type": "perflibs_spmat_t *"
+      },
+      {
+        "name": "m",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "n",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "nnz",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "row_indx",
+        "type": "const perflibs_int_t *"
+      },
+      {
+        "name": "col_indx",
+        "type": "const perflibs_int_t *"
+      },
+      {
+        "name": "vals",
+        "type": "const float *"
+      },
+      {
+        "name": "flags",
+        "type": "perflibs_int_t"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spmat_create_coo_d",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "A",
+        "type": "perflibs_spmat_t *"
+      },
+      {
+        "name": "m",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "n",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "nnz",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "row_indx",
+        "type": "const perflibs_int_t *"
+      },
+      {
+        "name": "col_indx",
+        "type": "const perflibs_int_t *"
+      },
+      {
+        "name": "vals",
+        "type": "const double *"
+      },
+      {
+        "name": "flags",
+        "type": "perflibs_int_t"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spmat_create_coo_c",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "A",
+        "type": "perflibs_spmat_t *"
+      },
+      {
+        "name": "m",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "n",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "nnz",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "row_indx",
+        "type": "const perflibs_int_t *"
+      },
+      {
+        "name": "col_indx",
+        "type": "const perflibs_int_t *"
+      },
+      {
+        "name": "vals",
+        "type": "const perflibs_singlecomplex_t *"
+      },
+      {
+        "name": "flags",
+        "type": "perflibs_int_t"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spmat_create_coo_z",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "A",
+        "type": "perflibs_spmat_t *"
+      },
+      {
+        "name": "m",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "n",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "nnz",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "row_indx",
+        "type": "const perflibs_int_t *"
+      },
+      {
+        "name": "col_indx",
+        "type": "const perflibs_int_t *"
+      },
+      {
+        "name": "vals",
+        "type": "const perflibs_doublecomplex_t *"
+      },
+      {
+        "name": "flags",
+        "type": "perflibs_int_t"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spmat_create_dense_s",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "A",
+        "type": "perflibs_spmat_t *"
+      },
+      {
+        "name": "layout",
+        "type": "enum perflibs_dense_layout"
+      },
+      {
+        "name": "m",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "n",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "lda",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "vals",
+        "type": "const float *"
+      },
+      {
+        "name": "flags",
+        "type": "perflibs_int_t"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spmat_create_dense_d",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "A",
+        "type": "perflibs_spmat_t *"
+      },
+      {
+        "name": "layout",
+        "type": "enum perflibs_dense_layout"
+      },
+      {
+        "name": "m",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "n",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "lda",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "vals",
+        "type": "const double *"
+      },
+      {
+        "name": "flags",
+        "type": "perflibs_int_t"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spmat_create_dense_c",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "A",
+        "type": "perflibs_spmat_t *"
+      },
+      {
+        "name": "layout",
+        "type": "enum perflibs_dense_layout"
+      },
+      {
+        "name": "m",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "n",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "lda",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "vals",
+        "type": "const perflibs_singlecomplex_t *"
+      },
+      {
+        "name": "flags",
+        "type": "perflibs_int_t"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spmat_create_dense_z",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "A",
+        "type": "perflibs_spmat_t *"
+      },
+      {
+        "name": "layout",
+        "type": "enum perflibs_dense_layout"
+      },
+      {
+        "name": "m",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "n",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "lda",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "vals",
+        "type": "const perflibs_doublecomplex_t *"
+      },
+      {
+        "name": "flags",
+        "type": "perflibs_int_t"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spmat_create_bsr_s",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "A",
+        "type": "perflibs_spmat_t *"
+      },
+      {
+        "name": "block_layout",
+        "type": "enum perflibs_dense_layout"
+      },
+      {
+        "name": "m",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "n",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "block_size",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "row_ptr",
+        "type": "const perflibs_int_t *"
+      },
+      {
+        "name": "col_indx",
+        "type": "const perflibs_int_t *"
+      },
+      {
+        "name": "vals",
+        "type": "const float *"
+      },
+      {
+        "name": "flags",
+        "type": "perflibs_int_t"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spmat_create_bsr_d",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "A",
+        "type": "perflibs_spmat_t *"
+      },
+      {
+        "name": "block_layout",
+        "type": "enum perflibs_dense_layout"
+      },
+      {
+        "name": "m",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "n",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "block_size",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "row_ptr",
+        "type": "const perflibs_int_t *"
+      },
+      {
+        "name": "col_indx",
+        "type": "const perflibs_int_t *"
+      },
+      {
+        "name": "vals",
+        "type": "const double *"
+      },
+      {
+        "name": "flags",
+        "type": "perflibs_int_t"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spmat_create_bsr_c",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "A",
+        "type": "perflibs_spmat_t *"
+      },
+      {
+        "name": "block_layout",
+        "type": "enum perflibs_dense_layout"
+      },
+      {
+        "name": "m",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "n",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "block_size",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "row_ptr",
+        "type": "const perflibs_int_t *"
+      },
+      {
+        "name": "col_indx",
+        "type": "const perflibs_int_t *"
+      },
+      {
+        "name": "vals",
+        "type": "const perflibs_singlecomplex_t *"
+      },
+      {
+        "name": "flags",
+        "type": "perflibs_int_t"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spmat_create_bsr_z",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "A",
+        "type": "perflibs_spmat_t *"
+      },
+      {
+        "name": "block_layout",
+        "type": "enum perflibs_dense_layout"
+      },
+      {
+        "name": "m",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "n",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "block_size",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "row_ptr",
+        "type": "const perflibs_int_t *"
+      },
+      {
+        "name": "col_indx",
+        "type": "const perflibs_int_t *"
+      },
+      {
+        "name": "vals",
+        "type": "const perflibs_doublecomplex_t *"
+      },
+      {
+        "name": "flags",
+        "type": "perflibs_int_t"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spmat_create_supernodal_s",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "A",
+        "type": "perflibs_spmat_t *"
+      },
+      {
+        "name": "m",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "n",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "nsuper",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "super_row_ptr",
+        "type": "const perflibs_int_t *"
+      },
+      {
+        "name": "super_col_indx",
+        "type": "const perflibs_int_t *"
+      },
+      {
+        "name": "row_indx",
+        "type": "const perflibs_int_t *"
+      },
+      {
+        "name": "col_ptr",
+        "type": "const perflibs_int_t *"
+      },
+      {
+        "name": "vals",
+        "type": "const float *"
+      },
+      {
+        "name": "flags",
+        "type": "perflibs_int_t"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spmat_create_supernodal_d",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "A",
+        "type": "perflibs_spmat_t *"
+      },
+      {
+        "name": "m",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "n",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "nsuper",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "super_row_ptr",
+        "type": "const perflibs_int_t *"
+      },
+      {
+        "name": "super_col_indx",
+        "type": "const perflibs_int_t *"
+      },
+      {
+        "name": "row_indx",
+        "type": "const perflibs_int_t *"
+      },
+      {
+        "name": "col_ptr",
+        "type": "const perflibs_int_t *"
+      },
+      {
+        "name": "vals",
+        "type": "const double *"
+      },
+      {
+        "name": "flags",
+        "type": "perflibs_int_t"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spmat_create_supernodal_c",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "A",
+        "type": "perflibs_spmat_t *"
+      },
+      {
+        "name": "m",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "n",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "nsuper",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "super_row_ptr",
+        "type": "const perflibs_int_t *"
+      },
+      {
+        "name": "super_col_indx",
+        "type": "const perflibs_int_t *"
+      },
+      {
+        "name": "row_indx",
+        "type": "const perflibs_int_t *"
+      },
+      {
+        "name": "col_ptr",
+        "type": "const perflibs_int_t *"
+      },
+      {
+        "name": "vals",
+        "type": "const perflibs_singlecomplex_t *"
+      },
+      {
+        "name": "flags",
+        "type": "perflibs_int_t"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spmat_create_supernodal_z",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "A",
+        "type": "perflibs_spmat_t *"
+      },
+      {
+        "name": "m",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "n",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "nsuper",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "super_row_ptr",
+        "type": "const perflibs_int_t *"
+      },
+      {
+        "name": "super_col_indx",
+        "type": "const perflibs_int_t *"
+      },
+      {
+        "name": "row_indx",
+        "type": "const perflibs_int_t *"
+      },
+      {
+        "name": "col_ptr",
+        "type": "const perflibs_int_t *"
+      },
+      {
+        "name": "vals",
+        "type": "const perflibs_doublecomplex_t *"
+      },
+      {
+        "name": "flags",
+        "type": "perflibs_int_t"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spmat_create_null",
+    "returnType": "perflibs_spmat_t",
+    "parameters": [
+      {
+        "name": "m",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "n",
+        "type": "perflibs_int_t"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spmat_create_identity",
+    "returnType": "perflibs_spmat_t",
+    "parameters": [
+      {
+        "name": "n",
+        "type": "perflibs_int_t"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spmat_destroy",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "A",
+        "type": "perflibs_spmat_t"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spmat_query",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "A",
+        "type": "perflibs_spmat_t"
+      },
+      {
+        "name": "index_base",
+        "type": "perflibs_int_t *"
+      },
+      {
+        "name": "m",
+        "type": "perflibs_int_t *"
+      },
+      {
+        "name": "n",
+        "type": "perflibs_int_t *"
+      },
+      {
+        "name": "nnz",
+        "type": "perflibs_int_t *"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spmat_hint",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "A",
+        "type": "perflibs_spmat_t"
+      },
+      {
+        "name": "hint",
+        "type": "enum perflibs_sparse_hint_type"
+      },
+      {
+        "name": "value",
+        "type": "enum perflibs_sparse_hint_value"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spvec_create_s",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "x",
+        "type": "perflibs_spvec_t *"
+      },
+      {
+        "name": "index_base",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "n",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "nnz",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "indx",
+        "type": "const perflibs_int_t *"
+      },
+      {
+        "name": "vals",
+        "type": "const float *"
+      },
+      {
+        "name": "flags",
+        "type": "perflibs_int_t"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spvec_create_d",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "x",
+        "type": "perflibs_spvec_t *"
+      },
+      {
+        "name": "index_base",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "n",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "nnz",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "indx",
+        "type": "const perflibs_int_t *"
+      },
+      {
+        "name": "vals",
+        "type": "const double *"
+      },
+      {
+        "name": "flags",
+        "type": "perflibs_int_t"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spvec_create_c",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "x",
+        "type": "perflibs_spvec_t *"
+      },
+      {
+        "name": "index_base",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "n",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "nnz",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "indx",
+        "type": "const perflibs_int_t *"
+      },
+      {
+        "name": "vals",
+        "type": "const perflibs_singlecomplex_t *"
+      },
+      {
+        "name": "flags",
+        "type": "perflibs_int_t"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spvec_create_z",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "x",
+        "type": "perflibs_spvec_t *"
+      },
+      {
+        "name": "index_base",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "n",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "nnz",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "indx",
+        "type": "const perflibs_int_t *"
+      },
+      {
+        "name": "vals",
+        "type": "const perflibs_doublecomplex_t *"
+      },
+      {
+        "name": "flags",
+        "type": "perflibs_int_t"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spvec_query",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "x",
+        "type": "perflibs_spvec_t"
+      },
+      {
+        "name": "index_base",
+        "type": "perflibs_int_t *"
+      },
+      {
+        "name": "n",
+        "type": "perflibs_int_t *"
+      },
+      {
+        "name": "nnz",
+        "type": "perflibs_int_t *"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spvec_destroy",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "x",
+        "type": "perflibs_spvec_t"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spvec_export_s",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "x",
+        "type": "perflibs_spvec_t"
+      },
+      {
+        "name": "index_base",
+        "type": "perflibs_int_t *"
+      },
+      {
+        "name": "n",
+        "type": "perflibs_int_t *"
+      },
+      {
+        "name": "nnz",
+        "type": "perflibs_int_t *"
+      },
+      {
+        "name": "indx",
+        "type": "perflibs_int_t *"
+      },
+      {
+        "name": "vals",
+        "type": "float *"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spvec_export_d",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "x",
+        "type": "perflibs_spvec_t"
+      },
+      {
+        "name": "index_base",
+        "type": "perflibs_int_t *"
+      },
+      {
+        "name": "n",
+        "type": "perflibs_int_t *"
+      },
+      {
+        "name": "nnz",
+        "type": "perflibs_int_t *"
+      },
+      {
+        "name": "indx",
+        "type": "perflibs_int_t *"
+      },
+      {
+        "name": "vals",
+        "type": "double *"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spvec_export_c",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "x",
+        "type": "perflibs_spvec_t"
+      },
+      {
+        "name": "index_base",
+        "type": "perflibs_int_t *"
+      },
+      {
+        "name": "n",
+        "type": "perflibs_int_t *"
+      },
+      {
+        "name": "nnz",
+        "type": "perflibs_int_t *"
+      },
+      {
+        "name": "indx",
+        "type": "perflibs_int_t *"
+      },
+      {
+        "name": "vals",
+        "type": "perflibs_singlecomplex_t *"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spvec_export_z",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "x",
+        "type": "perflibs_spvec_t"
+      },
+      {
+        "name": "index_base",
+        "type": "perflibs_int_t *"
+      },
+      {
+        "name": "n",
+        "type": "perflibs_int_t *"
+      },
+      {
+        "name": "nnz",
+        "type": "perflibs_int_t *"
+      },
+      {
+        "name": "indx",
+        "type": "perflibs_int_t *"
+      },
+      {
+        "name": "vals",
+        "type": "perflibs_doublecomplex_t *"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spvec_gather_s",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "x_d",
+        "type": "const float *"
+      },
+      {
+        "name": "index_base",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "n",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "x_s",
+        "type": "perflibs_spvec_t *"
+      },
+      {
+        "name": "flags",
+        "type": "perflibs_int_t"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spvec_gather_d",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "x_d",
+        "type": "const double *"
+      },
+      {
+        "name": "index_base",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "n",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "x_s",
+        "type": "perflibs_spvec_t *"
+      },
+      {
+        "name": "flags",
+        "type": "perflibs_int_t"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spvec_gather_c",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "x_d",
+        "type": "const perflibs_singlecomplex_t *"
+      },
+      {
+        "name": "index_base",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "n",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "x_s",
+        "type": "perflibs_spvec_t *"
+      },
+      {
+        "name": "flags",
+        "type": "perflibs_int_t"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spvec_gather_z",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "x_d",
+        "type": "const perflibs_doublecomplex_t *"
+      },
+      {
+        "name": "index_base",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "n",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "x_s",
+        "type": "perflibs_spvec_t *"
+      },
+      {
+        "name": "flags",
+        "type": "perflibs_int_t"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spvec_scatter_s",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "x_s",
+        "type": "perflibs_spvec_t"
+      },
+      {
+        "name": "x_d",
+        "type": "float *"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spvec_scatter_d",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "x_s",
+        "type": "perflibs_spvec_t"
+      },
+      {
+        "name": "x_d",
+        "type": "double *"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spvec_scatter_c",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "x_s",
+        "type": "perflibs_spvec_t"
+      },
+      {
+        "name": "x_d",
+        "type": "perflibs_singlecomplex_t *"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spvec_scatter_z",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "x_s",
+        "type": "perflibs_spvec_t"
+      },
+      {
+        "name": "x_d",
+        "type": "perflibs_doublecomplex_t *"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spvec_update_s",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "x",
+        "type": "perflibs_spvec_t"
+      },
+      {
+        "name": "n_updates",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "indx",
+        "type": "const perflibs_int_t *"
+      },
+      {
+        "name": "vals",
+        "type": "const float *"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spvec_update_d",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "x",
+        "type": "perflibs_spvec_t"
+      },
+      {
+        "name": "n_updates",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "indx",
+        "type": "const perflibs_int_t *"
+      },
+      {
+        "name": "vals",
+        "type": "const double *"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spvec_update_c",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "x",
+        "type": "perflibs_spvec_t"
+      },
+      {
+        "name": "n_updates",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "indx",
+        "type": "const perflibs_int_t *"
+      },
+      {
+        "name": "vals",
+        "type": "const perflibs_singlecomplex_t *"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spvec_update_z",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "x",
+        "type": "perflibs_spvec_t"
+      },
+      {
+        "name": "n_updates",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "indx",
+        "type": "const perflibs_int_t *"
+      },
+      {
+        "name": "vals",
+        "type": "const perflibs_doublecomplex_t *"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spdot_exec_s",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "x",
+        "type": "perflibs_spvec_t"
+      },
+      {
+        "name": "y",
+        "type": "const float *"
+      },
+      {
+        "name": "result",
+        "type": "float *"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spdot_exec_d",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "x",
+        "type": "perflibs_spvec_t"
+      },
+      {
+        "name": "y",
+        "type": "const double *"
+      },
+      {
+        "name": "result",
+        "type": "double *"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spdotu_exec_c",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "x",
+        "type": "perflibs_spvec_t"
+      },
+      {
+        "name": "y",
+        "type": "const perflibs_singlecomplex_t *"
+      },
+      {
+        "name": "result",
+        "type": "perflibs_singlecomplex_t *"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spdotu_exec_z",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "x",
+        "type": "perflibs_spvec_t"
+      },
+      {
+        "name": "y",
+        "type": "const perflibs_doublecomplex_t *"
+      },
+      {
+        "name": "result",
+        "type": "perflibs_doublecomplex_t *"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spdotc_exec_c",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "x",
+        "type": "perflibs_spvec_t"
+      },
+      {
+        "name": "y",
+        "type": "const perflibs_singlecomplex_t *"
+      },
+      {
+        "name": "result",
+        "type": "perflibs_singlecomplex_t *"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spdotc_exec_z",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "x",
+        "type": "perflibs_spvec_t"
+      },
+      {
+        "name": "y",
+        "type": "const perflibs_doublecomplex_t *"
+      },
+      {
+        "name": "result",
+        "type": "perflibs_doublecomplex_t *"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spaxpby_exec_s",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "alpha",
+        "type": "const float"
+      },
+      {
+        "name": "x",
+        "type": "perflibs_spvec_t"
+      },
+      {
+        "name": "beta",
+        "type": "const float"
+      },
+      {
+        "name": "y",
+        "type": "float *"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spaxpby_exec_d",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "alpha",
+        "type": "const double"
+      },
+      {
+        "name": "x",
+        "type": "perflibs_spvec_t"
+      },
+      {
+        "name": "beta",
+        "type": "const double"
+      },
+      {
+        "name": "y",
+        "type": "double *"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spaxpby_exec_c",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "alpha",
+        "type": "const perflibs_singlecomplex_t"
+      },
+      {
+        "name": "x",
+        "type": "perflibs_spvec_t"
+      },
+      {
+        "name": "beta",
+        "type": "const perflibs_singlecomplex_t"
+      },
+      {
+        "name": "y",
+        "type": "perflibs_singlecomplex_t *"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spaxpby_exec_z",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "alpha",
+        "type": "const perflibs_doublecomplex_t"
+      },
+      {
+        "name": "x",
+        "type": "perflibs_spvec_t"
+      },
+      {
+        "name": "beta",
+        "type": "const perflibs_doublecomplex_t"
+      },
+      {
+        "name": "y",
+        "type": "perflibs_doublecomplex_t *"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spwaxpby_exec_s",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "alpha",
+        "type": "const float"
+      },
+      {
+        "name": "x",
+        "type": "perflibs_spvec_t"
+      },
+      {
+        "name": "beta",
+        "type": "const float"
+      },
+      {
+        "name": "y",
+        "type": "const float *"
+      },
+      {
+        "name": "w",
+        "type": "float *"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spwaxpby_exec_d",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "alpha",
+        "type": "const double"
+      },
+      {
+        "name": "x",
+        "type": "perflibs_spvec_t"
+      },
+      {
+        "name": "beta",
+        "type": "const double"
+      },
+      {
+        "name": "y",
+        "type": "const double *"
+      },
+      {
+        "name": "w",
+        "type": "double *"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spwaxpby_exec_c",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "alpha",
+        "type": "const perflibs_singlecomplex_t"
+      },
+      {
+        "name": "x",
+        "type": "perflibs_spvec_t"
+      },
+      {
+        "name": "beta",
+        "type": "const perflibs_singlecomplex_t"
+      },
+      {
+        "name": "y",
+        "type": "const perflibs_singlecomplex_t *"
+      },
+      {
+        "name": "w",
+        "type": "perflibs_singlecomplex_t *"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spwaxpby_exec_z",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "alpha",
+        "type": "const perflibs_doublecomplex_t"
+      },
+      {
+        "name": "x",
+        "type": "perflibs_spvec_t"
+      },
+      {
+        "name": "beta",
+        "type": "const perflibs_doublecomplex_t"
+      },
+      {
+        "name": "y",
+        "type": "const perflibs_doublecomplex_t *"
+      },
+      {
+        "name": "w",
+        "type": "perflibs_doublecomplex_t *"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spmv_optimize",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "A",
+        "type": "perflibs_spmat_t"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spmm_optimize",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "transA",
+        "type": "enum perflibs_sparse_hint_value"
+      },
+      {
+        "name": "transB",
+        "type": "enum perflibs_sparse_hint_value"
+      },
+      {
+        "name": "alpha",
+        "type": "enum perflibs_sparse_hint_value"
+      },
+      {
+        "name": "A",
+        "type": "perflibs_spmat_t"
+      },
+      {
+        "name": "B",
+        "type": "perflibs_spmat_t"
+      },
+      {
+        "name": "beta",
+        "type": "enum perflibs_sparse_hint_value"
+      },
+      {
+        "name": "C",
+        "type": "perflibs_spmat_t"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spadd_optimize",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "transA",
+        "type": "enum perflibs_sparse_hint_value"
+      },
+      {
+        "name": "transB",
+        "type": "enum perflibs_sparse_hint_value"
+      },
+      {
+        "name": "alpha",
+        "type": "enum perflibs_sparse_hint_value"
+      },
+      {
+        "name": "A",
+        "type": "perflibs_spmat_t"
+      },
+      {
+        "name": "beta",
+        "type": "enum perflibs_sparse_hint_value"
+      },
+      {
+        "name": "B",
+        "type": "perflibs_spmat_t"
+      },
+      {
+        "name": "C",
+        "type": "perflibs_spmat_t"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spsm_optimize",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "transA",
+        "type": "enum perflibs_sparse_hint_value"
+      },
+      {
+        "name": "A",
+        "type": "perflibs_spmat_t"
+      },
+      {
+        "name": "X",
+        "type": "perflibs_spmat_t"
+      },
+      {
+        "name": "alpha",
+        "type": "enum perflibs_sparse_hint_value"
+      },
+      {
+        "name": "Y",
+        "type": "perflibs_spmat_t"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spsv_optimize",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "A",
+        "type": "perflibs_spmat_t"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spelmm_optimize",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "transA",
+        "type": "enum perflibs_sparse_hint_value"
+      },
+      {
+        "name": "transB",
+        "type": "enum perflibs_sparse_hint_value"
+      },
+      {
+        "name": "alpha",
+        "type": "enum perflibs_sparse_hint_value"
+      },
+      {
+        "name": "A",
+        "type": "perflibs_spmat_t"
+      },
+      {
+        "name": "B",
+        "type": "perflibs_spmat_t"
+      },
+      {
+        "name": "beta",
+        "type": "enum perflibs_sparse_hint_value"
+      },
+      {
+        "name": "C",
+        "type": "perflibs_spmat_t"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_sddmm_optimize",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "transA",
+        "type": "enum perflibs_sparse_hint_value"
+      },
+      {
+        "name": "transB",
+        "type": "enum perflibs_sparse_hint_value"
+      },
+      {
+        "name": "alpha",
+        "type": "enum perflibs_sparse_hint_value"
+      },
+      {
+        "name": "A",
+        "type": "perflibs_spmat_t"
+      },
+      {
+        "name": "B",
+        "type": "perflibs_spmat_t"
+      },
+      {
+        "name": "beta",
+        "type": "enum perflibs_sparse_hint_value"
+      },
+      {
+        "name": "C",
+        "type": "perflibs_spmat_t"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spmv_exec_s",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "trans",
+        "type": "enum perflibs_sparse_hint_value"
+      },
+      {
+        "name": "alpha",
+        "type": "float"
+      },
+      {
+        "name": "A",
+        "type": "perflibs_spmat_t"
+      },
+      {
+        "name": "x",
+        "type": "const float *"
+      },
+      {
+        "name": "beta",
+        "type": "float"
+      },
+      {
+        "name": "y",
+        "type": "float *"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spmv_exec_d",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "trans",
+        "type": "enum perflibs_sparse_hint_value"
+      },
+      {
+        "name": "alpha",
+        "type": "double"
+      },
+      {
+        "name": "A",
+        "type": "perflibs_spmat_t"
+      },
+      {
+        "name": "x",
+        "type": "const double *"
+      },
+      {
+        "name": "beta",
+        "type": "double"
+      },
+      {
+        "name": "y",
+        "type": "double *"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spmv_exec_c",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "trans",
+        "type": "enum perflibs_sparse_hint_value"
+      },
+      {
+        "name": "alpha",
+        "type": "perflibs_singlecomplex_t"
+      },
+      {
+        "name": "A",
+        "type": "perflibs_spmat_t"
+      },
+      {
+        "name": "x",
+        "type": "const perflibs_singlecomplex_t *"
+      },
+      {
+        "name": "beta",
+        "type": "perflibs_singlecomplex_t"
+      },
+      {
+        "name": "y",
+        "type": "perflibs_singlecomplex_t *"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spmv_exec_z",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "trans",
+        "type": "enum perflibs_sparse_hint_value"
+      },
+      {
+        "name": "alpha",
+        "type": "perflibs_doublecomplex_t"
+      },
+      {
+        "name": "A",
+        "type": "perflibs_spmat_t"
+      },
+      {
+        "name": "x",
+        "type": "const perflibs_doublecomplex_t *"
+      },
+      {
+        "name": "beta",
+        "type": "perflibs_doublecomplex_t"
+      },
+      {
+        "name": "y",
+        "type": "perflibs_doublecomplex_t *"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spmm_exec_s",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "transA",
+        "type": "enum perflibs_sparse_hint_value"
+      },
+      {
+        "name": "transB",
+        "type": "enum perflibs_sparse_hint_value"
+      },
+      {
+        "name": "alpha",
+        "type": "float"
+      },
+      {
+        "name": "A",
+        "type": "perflibs_spmat_t"
+      },
+      {
+        "name": "B",
+        "type": "perflibs_spmat_t"
+      },
+      {
+        "name": "beta",
+        "type": "float"
+      },
+      {
+        "name": "C",
+        "type": "perflibs_spmat_t"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spmm_exec_d",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "transA",
+        "type": "enum perflibs_sparse_hint_value"
+      },
+      {
+        "name": "transB",
+        "type": "enum perflibs_sparse_hint_value"
+      },
+      {
+        "name": "alpha",
+        "type": "double"
+      },
+      {
+        "name": "A",
+        "type": "perflibs_spmat_t"
+      },
+      {
+        "name": "B",
+        "type": "perflibs_spmat_t"
+      },
+      {
+        "name": "beta",
+        "type": "double"
+      },
+      {
+        "name": "C",
+        "type": "perflibs_spmat_t"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spmm_exec_c",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "transA",
+        "type": "enum perflibs_sparse_hint_value"
+      },
+      {
+        "name": "transB",
+        "type": "enum perflibs_sparse_hint_value"
+      },
+      {
+        "name": "alpha",
+        "type": "perflibs_singlecomplex_t"
+      },
+      {
+        "name": "A",
+        "type": "perflibs_spmat_t"
+      },
+      {
+        "name": "B",
+        "type": "perflibs_spmat_t"
+      },
+      {
+        "name": "beta",
+        "type": "perflibs_singlecomplex_t"
+      },
+      {
+        "name": "C",
+        "type": "perflibs_spmat_t"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spmm_exec_z",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "transA",
+        "type": "enum perflibs_sparse_hint_value"
+      },
+      {
+        "name": "transB",
+        "type": "enum perflibs_sparse_hint_value"
+      },
+      {
+        "name": "alpha",
+        "type": "perflibs_doublecomplex_t"
+      },
+      {
+        "name": "A",
+        "type": "perflibs_spmat_t"
+      },
+      {
+        "name": "B",
+        "type": "perflibs_spmat_t"
+      },
+      {
+        "name": "beta",
+        "type": "perflibs_doublecomplex_t"
+      },
+      {
+        "name": "C",
+        "type": "perflibs_spmat_t"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spadd_exec_s",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "transA",
+        "type": "enum perflibs_sparse_hint_value"
+      },
+      {
+        "name": "transB",
+        "type": "enum perflibs_sparse_hint_value"
+      },
+      {
+        "name": "alpha",
+        "type": "float"
+      },
+      {
+        "name": "A",
+        "type": "perflibs_spmat_t"
+      },
+      {
+        "name": "beta",
+        "type": "float"
+      },
+      {
+        "name": "B",
+        "type": "perflibs_spmat_t"
+      },
+      {
+        "name": "C",
+        "type": "perflibs_spmat_t"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spadd_exec_d",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "transA",
+        "type": "enum perflibs_sparse_hint_value"
+      },
+      {
+        "name": "transB",
+        "type": "enum perflibs_sparse_hint_value"
+      },
+      {
+        "name": "alpha",
+        "type": "double"
+      },
+      {
+        "name": "A",
+        "type": "perflibs_spmat_t"
+      },
+      {
+        "name": "beta",
+        "type": "double"
+      },
+      {
+        "name": "B",
+        "type": "perflibs_spmat_t"
+      },
+      {
+        "name": "C",
+        "type": "perflibs_spmat_t"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spadd_exec_c",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "transA",
+        "type": "enum perflibs_sparse_hint_value"
+      },
+      {
+        "name": "transB",
+        "type": "enum perflibs_sparse_hint_value"
+      },
+      {
+        "name": "alpha",
+        "type": "perflibs_singlecomplex_t"
+      },
+      {
+        "name": "A",
+        "type": "perflibs_spmat_t"
+      },
+      {
+        "name": "beta",
+        "type": "perflibs_singlecomplex_t"
+      },
+      {
+        "name": "B",
+        "type": "perflibs_spmat_t"
+      },
+      {
+        "name": "C",
+        "type": "perflibs_spmat_t"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spadd_exec_z",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "transA",
+        "type": "enum perflibs_sparse_hint_value"
+      },
+      {
+        "name": "transB",
+        "type": "enum perflibs_sparse_hint_value"
+      },
+      {
+        "name": "alpha",
+        "type": "perflibs_doublecomplex_t"
+      },
+      {
+        "name": "A",
+        "type": "perflibs_spmat_t"
+      },
+      {
+        "name": "beta",
+        "type": "perflibs_doublecomplex_t"
+      },
+      {
+        "name": "B",
+        "type": "perflibs_spmat_t"
+      },
+      {
+        "name": "C",
+        "type": "perflibs_spmat_t"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spsm_exec_s",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "transA",
+        "type": "enum perflibs_sparse_hint_value"
+      },
+      {
+        "name": "A",
+        "type": "perflibs_spmat_t"
+      },
+      {
+        "name": "X",
+        "type": "perflibs_spmat_t"
+      },
+      {
+        "name": "alpha",
+        "type": "float"
+      },
+      {
+        "name": "Y",
+        "type": "perflibs_spmat_t"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spsm_exec_d",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "transA",
+        "type": "enum perflibs_sparse_hint_value"
+      },
+      {
+        "name": "A",
+        "type": "perflibs_spmat_t"
+      },
+      {
+        "name": "X",
+        "type": "perflibs_spmat_t"
+      },
+      {
+        "name": "alpha",
+        "type": "double"
+      },
+      {
+        "name": "Y",
+        "type": "perflibs_spmat_t"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spsm_exec_c",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "transA",
+        "type": "enum perflibs_sparse_hint_value"
+      },
+      {
+        "name": "A",
+        "type": "perflibs_spmat_t"
+      },
+      {
+        "name": "X",
+        "type": "perflibs_spmat_t"
+      },
+      {
+        "name": "alpha",
+        "type": "perflibs_singlecomplex_t"
+      },
+      {
+        "name": "Y",
+        "type": "perflibs_spmat_t"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spsm_exec_z",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "transA",
+        "type": "enum perflibs_sparse_hint_value"
+      },
+      {
+        "name": "A",
+        "type": "perflibs_spmat_t"
+      },
+      {
+        "name": "X",
+        "type": "perflibs_spmat_t"
+      },
+      {
+        "name": "alpha",
+        "type": "perflibs_doublecomplex_t"
+      },
+      {
+        "name": "Y",
+        "type": "perflibs_spmat_t"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spsv_exec_s",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "transA",
+        "type": "enum perflibs_sparse_hint_value"
+      },
+      {
+        "name": "A",
+        "type": "perflibs_spmat_t"
+      },
+      {
+        "name": "x",
+        "type": "float *"
+      },
+      {
+        "name": "alpha",
+        "type": "float"
+      },
+      {
+        "name": "y",
+        "type": "const float *"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spsv_exec_d",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "transA",
+        "type": "enum perflibs_sparse_hint_value"
+      },
+      {
+        "name": "A",
+        "type": "perflibs_spmat_t"
+      },
+      {
+        "name": "x",
+        "type": "double *"
+      },
+      {
+        "name": "alpha",
+        "type": "double"
+      },
+      {
+        "name": "y",
+        "type": "const double *"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spsv_exec_c",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "transA",
+        "type": "enum perflibs_sparse_hint_value"
+      },
+      {
+        "name": "A",
+        "type": "perflibs_spmat_t"
+      },
+      {
+        "name": "x",
+        "type": "perflibs_singlecomplex_t *"
+      },
+      {
+        "name": "alpha",
+        "type": "perflibs_singlecomplex_t"
+      },
+      {
+        "name": "y",
+        "type": "const perflibs_singlecomplex_t *"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spsv_exec_z",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "transA",
+        "type": "enum perflibs_sparse_hint_value"
+      },
+      {
+        "name": "A",
+        "type": "perflibs_spmat_t"
+      },
+      {
+        "name": "x",
+        "type": "perflibs_doublecomplex_t *"
+      },
+      {
+        "name": "alpha",
+        "type": "perflibs_doublecomplex_t"
+      },
+      {
+        "name": "y",
+        "type": "const perflibs_doublecomplex_t *"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spmat_update_s",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "A",
+        "type": "perflibs_spmat_t"
+      },
+      {
+        "name": "n_updates",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "row_indx",
+        "type": "const perflibs_int_t *"
+      },
+      {
+        "name": "col_indx",
+        "type": "const perflibs_int_t *"
+      },
+      {
+        "name": "vals",
+        "type": "const float *"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spmat_update_d",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "A",
+        "type": "perflibs_spmat_t"
+      },
+      {
+        "name": "n_updates",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "row_indx",
+        "type": "const perflibs_int_t *"
+      },
+      {
+        "name": "col_indx",
+        "type": "const perflibs_int_t *"
+      },
+      {
+        "name": "vals",
+        "type": "const double *"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spmat_update_c",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "A",
+        "type": "perflibs_spmat_t"
+      },
+      {
+        "name": "n_updates",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "row_indx",
+        "type": "const perflibs_int_t *"
+      },
+      {
+        "name": "col_indx",
+        "type": "const perflibs_int_t *"
+      },
+      {
+        "name": "vals",
+        "type": "const perflibs_singlecomplex_t *"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spmat_update_z",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "A",
+        "type": "perflibs_spmat_t"
+      },
+      {
+        "name": "n_updates",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "row_indx",
+        "type": "const perflibs_int_t *"
+      },
+      {
+        "name": "col_indx",
+        "type": "const perflibs_int_t *"
+      },
+      {
+        "name": "vals",
+        "type": "const perflibs_doublecomplex_t *"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spmat_export_csr_s",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "A",
+        "type": "perflibs_const_spmat_t"
+      },
+      {
+        "name": "index_base",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "m",
+        "type": "perflibs_int_t *"
+      },
+      {
+        "name": "n",
+        "type": "perflibs_int_t *"
+      },
+      {
+        "name": "row_ptr",
+        "type": "perflibs_int_t * *"
+      },
+      {
+        "name": "col_indx",
+        "type": "perflibs_int_t * *"
+      },
+      {
+        "name": "vals",
+        "type": "float * *"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spmat_export_csr_d",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "A",
+        "type": "perflibs_const_spmat_t"
+      },
+      {
+        "name": "index_base",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "m",
+        "type": "perflibs_int_t *"
+      },
+      {
+        "name": "n",
+        "type": "perflibs_int_t *"
+      },
+      {
+        "name": "row_ptr",
+        "type": "perflibs_int_t * *"
+      },
+      {
+        "name": "col_indx",
+        "type": "perflibs_int_t * *"
+      },
+      {
+        "name": "vals",
+        "type": "double * *"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spmat_export_csr_c",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "A",
+        "type": "perflibs_const_spmat_t"
+      },
+      {
+        "name": "index_base",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "m",
+        "type": "perflibs_int_t *"
+      },
+      {
+        "name": "n",
+        "type": "perflibs_int_t *"
+      },
+      {
+        "name": "row_ptr",
+        "type": "perflibs_int_t * *"
+      },
+      {
+        "name": "col_indx",
+        "type": "perflibs_int_t * *"
+      },
+      {
+        "name": "vals",
+        "type": "perflibs_singlecomplex_t * *"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spmat_export_csr_z",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "A",
+        "type": "perflibs_const_spmat_t"
+      },
+      {
+        "name": "index_base",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "m",
+        "type": "perflibs_int_t *"
+      },
+      {
+        "name": "n",
+        "type": "perflibs_int_t *"
+      },
+      {
+        "name": "row_ptr",
+        "type": "perflibs_int_t * *"
+      },
+      {
+        "name": "col_indx",
+        "type": "perflibs_int_t * *"
+      },
+      {
+        "name": "vals",
+        "type": "perflibs_doublecomplex_t * *"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spmat_export_csc_s",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "A",
+        "type": "perflibs_const_spmat_t"
+      },
+      {
+        "name": "index_base",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "m",
+        "type": "perflibs_int_t *"
+      },
+      {
+        "name": "n",
+        "type": "perflibs_int_t *"
+      },
+      {
+        "name": "row_indx",
+        "type": "perflibs_int_t * *"
+      },
+      {
+        "name": "col_ptr",
+        "type": "perflibs_int_t * *"
+      },
+      {
+        "name": "vals",
+        "type": "float * *"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spmat_export_csc_d",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "A",
+        "type": "perflibs_const_spmat_t"
+      },
+      {
+        "name": "index_base",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "m",
+        "type": "perflibs_int_t *"
+      },
+      {
+        "name": "n",
+        "type": "perflibs_int_t *"
+      },
+      {
+        "name": "row_indx",
+        "type": "perflibs_int_t * *"
+      },
+      {
+        "name": "col_ptr",
+        "type": "perflibs_int_t * *"
+      },
+      {
+        "name": "vals",
+        "type": "double * *"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spmat_export_csc_c",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "A",
+        "type": "perflibs_const_spmat_t"
+      },
+      {
+        "name": "index_base",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "m",
+        "type": "perflibs_int_t *"
+      },
+      {
+        "name": "n",
+        "type": "perflibs_int_t *"
+      },
+      {
+        "name": "row_indx",
+        "type": "perflibs_int_t * *"
+      },
+      {
+        "name": "col_ptr",
+        "type": "perflibs_int_t * *"
+      },
+      {
+        "name": "vals",
+        "type": "perflibs_singlecomplex_t * *"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spmat_export_csc_z",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "A",
+        "type": "perflibs_const_spmat_t"
+      },
+      {
+        "name": "index_base",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "m",
+        "type": "perflibs_int_t *"
+      },
+      {
+        "name": "n",
+        "type": "perflibs_int_t *"
+      },
+      {
+        "name": "row_indx",
+        "type": "perflibs_int_t * *"
+      },
+      {
+        "name": "col_ptr",
+        "type": "perflibs_int_t * *"
+      },
+      {
+        "name": "vals",
+        "type": "perflibs_doublecomplex_t * *"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spmat_export_coo_s",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "A",
+        "type": "perflibs_const_spmat_t"
+      },
+      {
+        "name": "m",
+        "type": "perflibs_int_t *"
+      },
+      {
+        "name": "n",
+        "type": "perflibs_int_t *"
+      },
+      {
+        "name": "nnz",
+        "type": "perflibs_int_t *"
+      },
+      {
+        "name": "row_indx",
+        "type": "perflibs_int_t * *"
+      },
+      {
+        "name": "col_indx",
+        "type": "perflibs_int_t * *"
+      },
+      {
+        "name": "vals",
+        "type": "float * *"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spmat_export_coo_d",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "A",
+        "type": "perflibs_const_spmat_t"
+      },
+      {
+        "name": "m",
+        "type": "perflibs_int_t *"
+      },
+      {
+        "name": "n",
+        "type": "perflibs_int_t *"
+      },
+      {
+        "name": "nnz",
+        "type": "perflibs_int_t *"
+      },
+      {
+        "name": "row_indx",
+        "type": "perflibs_int_t * *"
+      },
+      {
+        "name": "col_indx",
+        "type": "perflibs_int_t * *"
+      },
+      {
+        "name": "vals",
+        "type": "double * *"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spmat_export_coo_c",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "A",
+        "type": "perflibs_const_spmat_t"
+      },
+      {
+        "name": "m",
+        "type": "perflibs_int_t *"
+      },
+      {
+        "name": "n",
+        "type": "perflibs_int_t *"
+      },
+      {
+        "name": "nnz",
+        "type": "perflibs_int_t *"
+      },
+      {
+        "name": "row_indx",
+        "type": "perflibs_int_t * *"
+      },
+      {
+        "name": "col_indx",
+        "type": "perflibs_int_t * *"
+      },
+      {
+        "name": "vals",
+        "type": "perflibs_singlecomplex_t * *"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spmat_export_coo_z",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "A",
+        "type": "perflibs_const_spmat_t"
+      },
+      {
+        "name": "m",
+        "type": "perflibs_int_t *"
+      },
+      {
+        "name": "n",
+        "type": "perflibs_int_t *"
+      },
+      {
+        "name": "nnz",
+        "type": "perflibs_int_t *"
+      },
+      {
+        "name": "row_indx",
+        "type": "perflibs_int_t * *"
+      },
+      {
+        "name": "col_indx",
+        "type": "perflibs_int_t * *"
+      },
+      {
+        "name": "vals",
+        "type": "perflibs_doublecomplex_t * *"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spmat_export_dense_s",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "A",
+        "type": "perflibs_const_spmat_t"
+      },
+      {
+        "name": "layout",
+        "type": "enum perflibs_dense_layout"
+      },
+      {
+        "name": "m",
+        "type": "perflibs_int_t *"
+      },
+      {
+        "name": "n",
+        "type": "perflibs_int_t *"
+      },
+      {
+        "name": "vals",
+        "type": "float * *"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spmat_export_dense_d",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "A",
+        "type": "perflibs_const_spmat_t"
+      },
+      {
+        "name": "layout",
+        "type": "enum perflibs_dense_layout"
+      },
+      {
+        "name": "m",
+        "type": "perflibs_int_t *"
+      },
+      {
+        "name": "n",
+        "type": "perflibs_int_t *"
+      },
+      {
+        "name": "vals",
+        "type": "double * *"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spmat_export_dense_c",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "A",
+        "type": "perflibs_const_spmat_t"
+      },
+      {
+        "name": "layout",
+        "type": "enum perflibs_dense_layout"
+      },
+      {
+        "name": "m",
+        "type": "perflibs_int_t *"
+      },
+      {
+        "name": "n",
+        "type": "perflibs_int_t *"
+      },
+      {
+        "name": "vals",
+        "type": "perflibs_singlecomplex_t * *"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spmat_export_dense_z",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "A",
+        "type": "perflibs_const_spmat_t"
+      },
+      {
+        "name": "layout",
+        "type": "enum perflibs_dense_layout"
+      },
+      {
+        "name": "m",
+        "type": "perflibs_int_t *"
+      },
+      {
+        "name": "n",
+        "type": "perflibs_int_t *"
+      },
+      {
+        "name": "vals",
+        "type": "perflibs_doublecomplex_t * *"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spmat_export_bsr_s",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "A",
+        "type": "perflibs_const_spmat_t"
+      },
+      {
+        "name": "block_layout",
+        "type": "enum perflibs_dense_layout"
+      },
+      {
+        "name": "index_base",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "m",
+        "type": "perflibs_int_t *"
+      },
+      {
+        "name": "n",
+        "type": "perflibs_int_t *"
+      },
+      {
+        "name": "block_size",
+        "type": "perflibs_int_t *"
+      },
+      {
+        "name": "row_ptr",
+        "type": "perflibs_int_t * *"
+      },
+      {
+        "name": "col_indx",
+        "type": "perflibs_int_t * *"
+      },
+      {
+        "name": "vals",
+        "type": "float * *"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spmat_export_bsr_d",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "A",
+        "type": "perflibs_const_spmat_t"
+      },
+      {
+        "name": "block_layout",
+        "type": "enum perflibs_dense_layout"
+      },
+      {
+        "name": "index_base",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "m",
+        "type": "perflibs_int_t *"
+      },
+      {
+        "name": "n",
+        "type": "perflibs_int_t *"
+      },
+      {
+        "name": "block_size",
+        "type": "perflibs_int_t *"
+      },
+      {
+        "name": "row_ptr",
+        "type": "perflibs_int_t * *"
+      },
+      {
+        "name": "col_indx",
+        "type": "perflibs_int_t * *"
+      },
+      {
+        "name": "vals",
+        "type": "double * *"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spmat_export_bsr_c",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "A",
+        "type": "perflibs_const_spmat_t"
+      },
+      {
+        "name": "block_layout",
+        "type": "enum perflibs_dense_layout"
+      },
+      {
+        "name": "index_base",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "m",
+        "type": "perflibs_int_t *"
+      },
+      {
+        "name": "n",
+        "type": "perflibs_int_t *"
+      },
+      {
+        "name": "block_size",
+        "type": "perflibs_int_t *"
+      },
+      {
+        "name": "row_ptr",
+        "type": "perflibs_int_t * *"
+      },
+      {
+        "name": "col_indx",
+        "type": "perflibs_int_t * *"
+      },
+      {
+        "name": "vals",
+        "type": "perflibs_singlecomplex_t * *"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spmat_export_bsr_z",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "A",
+        "type": "perflibs_const_spmat_t"
+      },
+      {
+        "name": "block_layout",
+        "type": "enum perflibs_dense_layout"
+      },
+      {
+        "name": "index_base",
+        "type": "perflibs_int_t"
+      },
+      {
+        "name": "m",
+        "type": "perflibs_int_t *"
+      },
+      {
+        "name": "n",
+        "type": "perflibs_int_t *"
+      },
+      {
+        "name": "block_size",
+        "type": "perflibs_int_t *"
+      },
+      {
+        "name": "row_ptr",
+        "type": "perflibs_int_t * *"
+      },
+      {
+        "name": "col_indx",
+        "type": "perflibs_int_t * *"
+      },
+      {
+        "name": "vals",
+        "type": "perflibs_doublecomplex_t * *"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_sprot_exec_s",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "x",
+        "type": "perflibs_spvec_t"
+      },
+      {
+        "name": "y",
+        "type": "float *"
+      },
+      {
+        "name": "c",
+        "type": "float"
+      },
+      {
+        "name": "s",
+        "type": "float"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_sprot_exec_d",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "x",
+        "type": "perflibs_spvec_t"
+      },
+      {
+        "name": "y",
+        "type": "double *"
+      },
+      {
+        "name": "c",
+        "type": "double"
+      },
+      {
+        "name": "s",
+        "type": "double"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_sprot_exec_c",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "x",
+        "type": "perflibs_spvec_t"
+      },
+      {
+        "name": "y",
+        "type": "perflibs_singlecomplex_t *"
+      },
+      {
+        "name": "c",
+        "type": "float"
+      },
+      {
+        "name": "s",
+        "type": "perflibs_singlecomplex_t"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_sprot_exec_cs",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "x",
+        "type": "perflibs_spvec_t"
+      },
+      {
+        "name": "y",
+        "type": "perflibs_singlecomplex_t *"
+      },
+      {
+        "name": "c",
+        "type": "float"
+      },
+      {
+        "name": "s",
+        "type": "float"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_sprot_exec_z",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "x",
+        "type": "perflibs_spvec_t"
+      },
+      {
+        "name": "y",
+        "type": "perflibs_doublecomplex_t *"
+      },
+      {
+        "name": "c",
+        "type": "double"
+      },
+      {
+        "name": "s",
+        "type": "perflibs_doublecomplex_t"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_sprot_exec_zd",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "x",
+        "type": "perflibs_spvec_t"
+      },
+      {
+        "name": "y",
+        "type": "perflibs_doublecomplex_t *"
+      },
+      {
+        "name": "c",
+        "type": "double"
+      },
+      {
+        "name": "s",
+        "type": "double"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spnorm_exec_s",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "A",
+        "type": "perflibs_spmat_t"
+      },
+      {
+        "name": "nrm",
+        "type": "enum perflibs_sparse_norm"
+      },
+      {
+        "name": "result",
+        "type": "float *"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spnorm_exec_d",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "A",
+        "type": "perflibs_spmat_t"
+      },
+      {
+        "name": "nrm",
+        "type": "enum perflibs_sparse_norm"
+      },
+      {
+        "name": "result",
+        "type": "double *"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spnorm_exec_c",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "A",
+        "type": "perflibs_spmat_t"
+      },
+      {
+        "name": "nrm",
+        "type": "enum perflibs_sparse_norm"
+      },
+      {
+        "name": "result",
+        "type": "float *"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spnorm_exec_z",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "A",
+        "type": "perflibs_spmat_t"
+      },
+      {
+        "name": "nrm",
+        "type": "enum perflibs_sparse_norm"
+      },
+      {
+        "name": "result",
+        "type": "double *"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spelmm_exec_s",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "transA",
+        "type": "enum perflibs_sparse_hint_value"
+      },
+      {
+        "name": "transB",
+        "type": "enum perflibs_sparse_hint_value"
+      },
+      {
+        "name": "alpha",
+        "type": "float"
+      },
+      {
+        "name": "A",
+        "type": "perflibs_spmat_t"
+      },
+      {
+        "name": "B",
+        "type": "perflibs_spmat_t"
+      },
+      {
+        "name": "beta",
+        "type": "float"
+      },
+      {
+        "name": "C",
+        "type": "perflibs_spmat_t"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spelmm_exec_d",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "transA",
+        "type": "enum perflibs_sparse_hint_value"
+      },
+      {
+        "name": "transB",
+        "type": "enum perflibs_sparse_hint_value"
+      },
+      {
+        "name": "alpha",
+        "type": "double"
+      },
+      {
+        "name": "A",
+        "type": "perflibs_spmat_t"
+      },
+      {
+        "name": "B",
+        "type": "perflibs_spmat_t"
+      },
+      {
+        "name": "beta",
+        "type": "double"
+      },
+      {
+        "name": "C",
+        "type": "perflibs_spmat_t"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spelmm_exec_c",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "transA",
+        "type": "enum perflibs_sparse_hint_value"
+      },
+      {
+        "name": "transB",
+        "type": "enum perflibs_sparse_hint_value"
+      },
+      {
+        "name": "alpha",
+        "type": "perflibs_singlecomplex_t"
+      },
+      {
+        "name": "A",
+        "type": "perflibs_spmat_t"
+      },
+      {
+        "name": "B",
+        "type": "perflibs_spmat_t"
+      },
+      {
+        "name": "beta",
+        "type": "perflibs_singlecomplex_t"
+      },
+      {
+        "name": "C",
+        "type": "perflibs_spmat_t"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spelmm_exec_z",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "transA",
+        "type": "enum perflibs_sparse_hint_value"
+      },
+      {
+        "name": "transB",
+        "type": "enum perflibs_sparse_hint_value"
+      },
+      {
+        "name": "alpha",
+        "type": "perflibs_doublecomplex_t"
+      },
+      {
+        "name": "A",
+        "type": "perflibs_spmat_t"
+      },
+      {
+        "name": "B",
+        "type": "perflibs_spmat_t"
+      },
+      {
+        "name": "beta",
+        "type": "perflibs_doublecomplex_t"
+      },
+      {
+        "name": "C",
+        "type": "perflibs_spmat_t"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_sddmm_exec_s",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "transA",
+        "type": "enum perflibs_sparse_hint_value"
+      },
+      {
+        "name": "transB",
+        "type": "enum perflibs_sparse_hint_value"
+      },
+      {
+        "name": "alpha",
+        "type": "float"
+      },
+      {
+        "name": "A",
+        "type": "perflibs_spmat_t"
+      },
+      {
+        "name": "B",
+        "type": "perflibs_spmat_t"
+      },
+      {
+        "name": "beta",
+        "type": "float"
+      },
+      {
+        "name": "C",
+        "type": "perflibs_spmat_t"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_sddmm_exec_d",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "transA",
+        "type": "enum perflibs_sparse_hint_value"
+      },
+      {
+        "name": "transB",
+        "type": "enum perflibs_sparse_hint_value"
+      },
+      {
+        "name": "alpha",
+        "type": "double"
+      },
+      {
+        "name": "A",
+        "type": "perflibs_spmat_t"
+      },
+      {
+        "name": "B",
+        "type": "perflibs_spmat_t"
+      },
+      {
+        "name": "beta",
+        "type": "double"
+      },
+      {
+        "name": "C",
+        "type": "perflibs_spmat_t"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_sddmm_exec_c",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "transA",
+        "type": "enum perflibs_sparse_hint_value"
+      },
+      {
+        "name": "transB",
+        "type": "enum perflibs_sparse_hint_value"
+      },
+      {
+        "name": "alpha",
+        "type": "perflibs_singlecomplex_t"
+      },
+      {
+        "name": "A",
+        "type": "perflibs_spmat_t"
+      },
+      {
+        "name": "B",
+        "type": "perflibs_spmat_t"
+      },
+      {
+        "name": "beta",
+        "type": "perflibs_singlecomplex_t"
+      },
+      {
+        "name": "C",
+        "type": "perflibs_spmat_t"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_sddmm_exec_z",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "transA",
+        "type": "enum perflibs_sparse_hint_value"
+      },
+      {
+        "name": "transB",
+        "type": "enum perflibs_sparse_hint_value"
+      },
+      {
+        "name": "alpha",
+        "type": "perflibs_doublecomplex_t"
+      },
+      {
+        "name": "A",
+        "type": "perflibs_spmat_t"
+      },
+      {
+        "name": "B",
+        "type": "perflibs_spmat_t"
+      },
+      {
+        "name": "beta",
+        "type": "perflibs_doublecomplex_t"
+      },
+      {
+        "name": "C",
+        "type": "perflibs_spmat_t"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spscale_exec_s",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "alpha",
+        "type": "float"
+      },
+      {
+        "name": "A",
+        "type": "perflibs_spmat_t"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spscale_exec_d",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "alpha",
+        "type": "double"
+      },
+      {
+        "name": "A",
+        "type": "perflibs_spmat_t"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spscale_exec_c",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "alpha",
+        "type": "perflibs_singlecomplex_t"
+      },
+      {
+        "name": "A",
+        "type": "perflibs_spmat_t"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spscale_exec_z",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "alpha",
+        "type": "perflibs_doublecomplex_t"
+      },
+      {
+        "name": "A",
+        "type": "perflibs_spmat_t"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_sptranspose_exec_s",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "transA",
+        "type": "enum perflibs_sparse_hint_value"
+      },
+      {
+        "name": "A",
+        "type": "perflibs_spmat_t"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_sptranspose_exec_d",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "transA",
+        "type": "enum perflibs_sparse_hint_value"
+      },
+      {
+        "name": "A",
+        "type": "perflibs_spmat_t"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_sptranspose_exec_c",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "transA",
+        "type": "enum perflibs_sparse_hint_value"
+      },
+      {
+        "name": "A",
+        "type": "perflibs_spmat_t"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_sptranspose_exec_z",
+    "returnType": "perflibs_status_t",
+    "parameters": [
+      {
+        "name": "transA",
+        "type": "enum perflibs_sparse_hint_value"
+      },
+      {
+        "name": "A",
+        "type": "perflibs_spmat_t"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spmat_print_err",
+    "returnType": "void",
+    "parameters": [
+      {
+        "name": "A",
+        "type": "perflibs_spmat_t"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spvec_print_err",
+    "returnType": "void",
+    "parameters": [
+      {
+        "name": "x",
+        "type": "perflibs_spvec_t"
+      }
+    ]
+  },
+  {
+    "name": "perflibs_spmat_export_bsr_c_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spmat_export_bsr_d_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spmat_export_bsr_s_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spmat_export_bsr_z_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spmat_export_coo_c_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spmat_export_coo_d_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spmat_export_coo_s_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spmat_export_coo_z_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spmat_export_csc_c_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spmat_export_csc_d_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spmat_export_csc_s_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spmat_export_csc_z_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spmat_export_csr_c_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spmat_export_csr_d_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spmat_export_csr_s_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spmat_export_csr_z_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spmat_export_dense_c_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spmat_export_dense_d_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spmat_export_dense_s_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spmat_export_dense_z_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spadd_exec_c_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spadd_exec_d_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spadd_exec_s_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spadd_exec_z_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spadd_optimize_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spaxpby_exec_c_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spaxpby_exec_d_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spaxpby_exec_s_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spaxpby_exec_z_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spdot_exec_d_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spdot_exec_s_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spdotc_exec_c_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spdotc_exec_z_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spdotu_exec_c_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spdotu_exec_z_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spmat_create_bsr_c_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spmat_create_bsr_d_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spmat_create_bsr_s_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spmat_create_bsr_z_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spmat_create_coo_c_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spmat_create_coo_d_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spmat_create_coo_s_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spmat_create_coo_z_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spmat_create_csc_c_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spmat_create_csc_d_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spmat_create_csc_s_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spmat_create_csc_z_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spmat_create_csr_c_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spmat_create_csr_d_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spmat_create_csr_s_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spmat_create_csr_z_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spmat_create_dense_c_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spmat_create_dense_d_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spmat_create_dense_s_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spmat_create_dense_z_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spmat_create_identity_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spmat_create_null_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spmat_destroy_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spmat_hint_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spmat_print_err_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spmat_query_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spmat_update_c_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spmat_update_d_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spmat_update_s_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spmat_update_z_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spmm_exec_c_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spmm_exec_d_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spmm_exec_s_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spmm_exec_z_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spmm_optimize_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spmv_exec_c_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spmv_exec_d_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spmv_exec_s_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spmv_exec_z_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spmv_optimize_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_sprot_exec_c_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_sprot_exec_cs_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_sprot_exec_d_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_sprot_exec_s_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_sprot_exec_z_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_sprot_exec_zd_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spsm_exec_c_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spsm_exec_d_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spsm_exec_s_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spsm_exec_z_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spsm_optimize_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spsv_exec_c_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spsv_exec_d_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spsv_exec_s_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spsv_exec_z_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spsv_optimize_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spvec_create_c_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spvec_create_d_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spvec_create_s_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spvec_create_z_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spvec_destroy_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spvec_export_c_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spvec_export_d_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spvec_export_s_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spvec_export_z_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spvec_gather_c_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spvec_gather_d_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spvec_gather_s_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spvec_gather_z_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spvec_print_err_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spvec_query_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spvec_scatter_c_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spvec_scatter_d_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spvec_scatter_s_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spvec_scatter_z_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spvec_update_c_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spvec_update_d_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spvec_update_s_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spvec_update_z_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spwaxpby_exec_c_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spwaxpby_exec_d_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spwaxpby_exec_s_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spwaxpby_exec_z_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spelmm_optimize_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spelmm_exec_c_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spelmm_exec_d_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spelmm_exec_s_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spelmm_exec_z_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spscale_exec_c_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spscale_exec_d_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spscale_exec_s_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spscale_exec_z_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_sptranspose_exec_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_sddmm_optimize_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_sddmm_exec_c_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_sddmm_exec_d_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_sddmm_exec_s_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_sddmm_exec_z_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spnorm_exec_cs_",
+    "returnType": "void",
+    "parameters": []
+  },
+  {
+    "name": "perflibs_spnorm_exec_zd_",
+    "returnType": "void",
+    "parameters": []
+  }
+]
