@@ -1117,7 +1117,8 @@ template <typename T> inline T conj(T value) {
 }
 
 // OpenMP atomic does not work properly on Windows with clang.
-// Use OpenMP critical instead until HPCL3-1423 is resolved.
+// Use OpenMP critical instead until the upstream LLVM/OpenMP issue is resolved:
+// https://github.com/llvm/llvm-project/issues/64694
 inline void update_y(float &y, float value) {
 #if defined(_WIN32)
 #pragma omp critical(csr_update_y_s)

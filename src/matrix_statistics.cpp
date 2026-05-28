@@ -38,8 +38,11 @@ template <typename T> void perflibs_spmat_impl_t<T>::fill_matrix_stats_mgmd() {
     // log values additively, rather than multipliying differences
     // in order to avoid running into overflow problems.
 #if defined(_WIN32)
-    // OpenMP parallel reduction gives an incorrect result on Windows.
-    // Do reduction manually until HPCL3-1422 is resolved.
+    // Windows OpenMP reduction has produced incorrect results with the supported
+    // Windows toolchain. The upstream LLVM/OpenMP issue was closed as not
+    // reproducible, so keep the manual reduction until this is verified with
+    // the supported Windows toolchain:
+    // https://github.com/llvm/llvm-project/issues/64693
     auto nthreads = perflibs::sparse::omp::get_max_threads();
     std::vector<double> mgmd(nthreads, 0.0);
 #pragma omp parallel shared(mgmd)

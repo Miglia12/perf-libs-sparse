@@ -32,7 +32,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#ifdef _WIN32
+#include <windows.h>
+#else
 #include <time.h>
+#endif
 
 /* Build this example either against ArmPL or directly against
  * perf-libs-sparse by remapping the small subset of API names used here.
@@ -89,6 +93,32 @@ static void require(int ok, const char *msg) {
 static void check(armpl_status_t s, const char *msg) {
   if (s != ARMPL_STATUS_SUCCESS)
     fail(msg);
+}
+
+/* Use a platform monotonic timer: QueryPerformanceCounter on Windows and
+ * clock_gettime(CLOCK_MONOTONIC) elsewhere.
+ */
+static double now_seconds(void) {
+#ifdef _WIN32
+  static LARGE_INTEGER freq;
+  static int initialized = 0;
+  LARGE_INTEGER counter;
+
+  if (!initialized) {
+    require(QueryPerformanceFrequency(&freq) != 0,
+            "QueryPerformanceFrequency failed");
+    require(freq.QuadPart > 0, "QueryPerformanceFrequency returned zero");
+    initialized = 1;
+  }
+
+  require(QueryPerformanceCounter(&counter) != 0,
+          "QueryPerformanceCounter failed");
+  return (double)counter.QuadPart / (double)freq.QuadPart;
+#else
+  struct timespec t;
+  require(clock_gettime(CLOCK_MONOTONIC, &t) == 0, "clock_gettime failed");
+  return (double)t.tv_sec + 1.0e-9 * (double)t.tv_nsec;
+#endif
 }
 
 static void read_matrix_market_csr(const char *path, struct csr_matrix *csr) {
@@ -211,8 +241,8 @@ int main(int argc, char **argv) {
   struct csr_matrix csr = {0, 0, 0, NULL, NULL, NULL};
   armpl_spmat_t A = NULL, B = NULL, C = NULL;
   armpl_int_t cols = 1024;
-  struct timespec t0, t1;
-  double *vals_B, sec;
+  double t0, t1, sec;
+  double *vals_B;
   size_t pos, b_len;
 
   require(path != NULL, "usage: pl_bench_sparse_x_dense matrix.mtx");
@@ -251,7 +281,7 @@ int main(int argc, char **argv) {
             ARMPL_SPARSE_SCALAR_ONE, A, B, ARMPL_SPARSE_SCALAR_ZERO, C),
         "optimize failed");
 
-  require(clock_gettime(CLOCK_MONOTONIC, &t0) == 0, "clock_gettime failed");
+  t0 = now_seconds();
 
   for (int i = 0; i < iters; ++i) {
     check(armpl_spmm_exec_d(ARMPL_SPARSE_OPERATION_NOTRANS,
@@ -259,10 +289,9 @@ int main(int argc, char **argv) {
           "exec failed");
   }
 
-  require(clock_gettime(CLOCK_MONOTONIC, &t1) == 0, "clock_gettime failed");
+  t1 = now_seconds();
 
-  sec = (double)(t1.tv_sec - t0.tv_sec) +
-        1.0e-9 * (double)(t1.tv_nsec - t0.tv_nsec);
+  sec = t1 - t0;
 
   printf("A: %lld x %lld nnz=%zu\n", (long long)csr.m, (long long)csr.n,
          csr.nnz);
