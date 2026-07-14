@@ -128,7 +128,7 @@ static void read_matrix_market_csr(const char *path, struct csr_matrix *csr) {
   size_t used = 0, pos;
   struct entry *entries;
   armpl_int_t *next;
-  size_t m_sz, cap;
+  size_t expansion, m_sz, cap;
 
   require(f != NULL, "failed to open .mtx file");
   require(fgets(line, sizeof(line), f) != NULL,
@@ -145,12 +145,16 @@ static void read_matrix_market_csr(const char *path, struct csr_matrix *csr) {
 
   require(sscanf(line, "%lld %lld %lld", &m_ll, &n_ll, &nnz_ll) == 3,
           "bad size line");
-  require(m_ll > 0 && n_ll > 0 && nnz_ll >= 0, "invalid matrix dimensions");
+  require(m_ll > 0 && n_ll > 0 && nnz_ll > 0, "invalid matrix dimensions");
 
   csr->m = (armpl_int_t)m_ll;
   csr->n = (armpl_int_t)n_ll;
   m_sz = (size_t)csr->m;
-  cap = (size_t)nnz_ll * (strcmp(symmetry, "general") ? 2u : 1u);
+  expansion = strcmp(symmetry, "general") ? 2u : 1u;
+  require((size_t)nnz_ll <= SIZE_MAX / expansion,
+          "matrix too large for platform");
+  cap = (size_t)nnz_ll * expansion;
+  require(cap <= SIZE_MAX / sizeof(*entries), "matrix too large for platform");
 
   entries = malloc(cap * sizeof(*entries));
   require(entries != NULL, "entries allocation failed");

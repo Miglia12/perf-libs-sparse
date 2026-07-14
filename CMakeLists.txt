@@ -689,9 +689,9 @@ if(SPARSE_ENABLE_TESTS)
     "${CMAKE_CURRENT_SOURCE_DIR}/test/matmul_dispatch_paths_s.c"
     "${CMAKE_CURRENT_SOURCE_DIR}/test/matmul_dispatch_paths_z.c"
     "${CMAKE_CURRENT_SOURCE_DIR}/test/matmul_variants_c.c"
-    "${CMAKE_CURRENT_SOURCE_DIR}/test/matmul_variants_z.c"
-    "${CMAKE_CURRENT_SOURCE_DIR}/test/matmul_variants_s.c"
     "${CMAKE_CURRENT_SOURCE_DIR}/test/matmul_variants_d.c"
+    "${CMAKE_CURRENT_SOURCE_DIR}/test/matmul_variants_s.c"
+    "${CMAKE_CURRENT_SOURCE_DIR}/test/matmul_variants_z.c"
     "${CMAKE_CURRENT_SOURCE_DIR}/test/matrix_object_ops.c"
     "${CMAKE_CURRENT_SOURCE_DIR}/test/matrix_kernel_ops.c"
     "${CMAKE_CURRENT_SOURCE_DIR}/test/solve_dispatch_paths.c"
@@ -706,7 +706,10 @@ if(SPARSE_ENABLE_TESTS)
     "${CMAKE_CURRENT_SOURCE_DIR}/test/super_lower.c"
     "${CMAKE_CURRENT_SOURCE_DIR}/test/super_upper.c"
     "${CMAKE_CURRENT_SOURCE_DIR}/test/vector_type_smoke.c"
+    "${CMAKE_CURRENT_SOURCE_DIR}/test/spsm_basic_c.c"
     "${CMAKE_CURRENT_SOURCE_DIR}/test/spsm_basic_d.c"
+    "${CMAKE_CURRENT_SOURCE_DIR}/test/spsm_basic_s.c"
+    "${CMAKE_CURRENT_SOURCE_DIR}/test/spsm_basic_z.c"
   )
 
   set(SPARSE_C_TEST_TARGETS "")

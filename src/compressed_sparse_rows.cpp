@@ -78,6 +78,33 @@ void init_csr(perflibs_spmat_impl_t<T> *impl, perflibs_int_t m,
   impl->no_copy = no_copy;
 }
 
+struct csr_triangular_solve_info {
+  perflibs_int_t off;
+  bool known_diag;
+  bool unit;
+  bool upper;
+  perflibs_int_t diag_lo;
+  perflibs_int_t diag_hi;
+};
+
+inline csr_triangular_solve_info
+get_csr_triangular_solve_info(const perflibs_int_t *row_ptr,
+                              sparse_hint_value_internal uplo,
+                              sparse_hint_value_internal diag) {
+  const bool known_diag =
+      diag == PERFLIBS_DIAG_KNOWN_UNIT || diag == PERFLIBS_DIAG_KNOWN_NON_UNIT;
+  const bool unit =
+      diag == PERFLIBS_DIAG_KNOWN_UNIT || diag == PERFLIBS_DIAG_UNIT;
+  const bool upper = uplo == PERFLIBS_SHAPE_UPPER_TRIANGULAR;
+  const perflibs_int_t diag_lo =
+      known_diag && upper; // add one to the first row index pos if we know
+                           // where the diag is and it's upper
+  const perflibs_int_t diag_hi =
+      known_diag && !upper; // subtract one from the last row index pos if we
+                            // know where the diag is and it's lower
+  return {row_ptr[0], known_diag, unit, upper, diag_lo, diag_hi};
+}
+
 perflibs_sparse_matrix_shape_t get_shape_csr(perflibs_int_t m, perflibs_int_t n,
                                              const perflibs_int_t *row_ptr,
                                              const perflibs_int_t *col_indx) {
@@ -1529,8 +1556,7 @@ void spmv_csr_notrans(const perflibs_csr<T> &csr, const T *x, T *y, T alpha,
 }
 
 template <typename T, decltype(&no_conj<T>) conj>
-void spmv_csr_trans(const perflibs_csr<T> &csr, const T *x, T *y, T alpha,
-                    T beta) {
+void spmv_csr_trans(const perflibs_csr<T> &csr, const T *x, T *y, T alpha) {
 
   const auto row_ptr = csr.row_ptr_ptr;
   const auto col_indx = csr.col_indx_ptr;
@@ -1538,7 +1564,7 @@ void spmv_csr_trans(const perflibs_csr<T> &csr, const T *x, T *y, T alpha,
   const auto off = row_ptr[0];
 
 #pragma omp parallel for default(none) schedule(static)                        \
-    firstprivate(row_ptr, col_indx, vals, off) shared(csr, x, y, alpha, beta)  \
+    firstprivate(row_ptr, col_indx, vals, off) shared(csr, x, y, alpha)        \
     num_threads(csr.par_mv.nthreads)
   for (perflibs_int_t i = 0; i < csr.m - 1; i += 2) {
 
@@ -1644,9 +1670,9 @@ void spmv_csr(const perflibs_csr<T> &csr, sparse_hint_value_internal trans,
     }
 
     if (trans == PERFLIBS_OPERATION_TRANS) {
-      spmv_csr_trans<T, no_conj<T>>(csr, x, y, alpha, beta);
+      spmv_csr_trans<T, no_conj<T>>(csr, x, y, alpha);
     } else if (trans == PERFLIBS_OPERATION_CONJTRANS) {
-      spmv_csr_trans<T, conj<T>>(csr, x, y, alpha, beta);
+      spmv_csr_trans<T, conj<T>>(csr, x, y, alpha);
     }
   }
 }
@@ -1892,6 +1918,61 @@ inline __attribute__((always_inline)) void spsv_notrans_kernel(
   }
 };
 
+// SpSM computation to update row i when notrans/conjnotrans is specified
+template <bool IsConj, typename T>
+inline __attribute__((always_inline)) void spsm_notrans_kernel(
+    const bool unit, const perflibs_int_t diag_indx, const perflibs_int_t i,
+    const perflibs_int_t off, const perflibs_int_t *col_indx, const T *vals,
+    T *X, const perflibs_int_t x_stride_row, const perflibs_int_t x_stride_col,
+    const T *Y, const perflibs_int_t y_stride_row,
+    const perflibs_int_t y_stride_col, const perflibs_int_t nrhs, const T alpha,
+    const perflibs_int_t row_start_indx, const perflibs_int_t row_end_indx) {
+  perflibs_int_t jdiag = diag_indx;
+  T *x_row = X + i * x_stride_row;
+  const T *y_row = Y + i * y_stride_row;
+
+  for (perflibs_int_t r = 0; r < nrhs; ++r) {
+    if constexpr (IsConj) {
+      x_row[r * x_stride_col] =
+          perflibs::sparse::conj(alpha * y_row[r * y_stride_col]);
+    } else {
+      x_row[r * x_stride_col] = alpha * y_row[r * y_stride_col];
+    }
+  }
+
+  if (diag_indx >= 0) {
+    for (perflibs_int_t j = row_start_indx; j <= row_end_indx; ++j) {
+      const perflibs_int_t idx = col_indx[j] - off;
+      const T a = vals[j];
+      const T *x_dep = X + idx * x_stride_row;
+      for (perflibs_int_t r = 0; r < nrhs; ++r) {
+        x_row[r * x_stride_col] -= x_dep[r * x_stride_col] * a;
+      }
+    }
+  } else {
+    jdiag = row_end_indx;
+    for (perflibs_int_t j = row_end_indx; j >= row_start_indx; --j) {
+      const perflibs_int_t idx = col_indx[j] - off;
+      if (idx != i) {
+        const T a = vals[j];
+        const T *x_dep = X + idx * x_stride_row;
+        for (perflibs_int_t r = 0; r < nrhs; ++r) {
+          x_row[r * x_stride_col] -= x_dep[r * x_stride_col] * a;
+        }
+      } else {
+        jdiag = j;
+      }
+    }
+  }
+
+  if (!unit) {
+    const T diagv = vals[jdiag];
+    for (perflibs_int_t r = 0; r < nrhs; ++r) {
+      x_row[r * x_stride_col] /= diagv;
+    }
+  }
+};
+
 template <bool IsConj, typename T>
 void spsv_csr_parallel(sparse_hint_value_internal uplo,
                        sparse_hint_value_internal diag, perflibs_int_t nrows,
@@ -1899,17 +1980,7 @@ void spsv_csr_parallel(sparse_hint_value_internal uplo,
                        const perflibs_int_t *col_indx, const T *vals,
                        const par_sv_t &par_sv, T *x, const T *y, T alpha) {
 
-  const auto off = row_ptr[0];
-  const bool known_diag =
-      diag == PERFLIBS_DIAG_KNOWN_UNIT || diag == PERFLIBS_DIAG_KNOWN_NON_UNIT;
-  const bool unit =
-      diag == PERFLIBS_DIAG_KNOWN_UNIT || diag == PERFLIBS_DIAG_UNIT;
-  const bool upper = uplo == PERFLIBS_SHAPE_UPPER_TRIANGULAR;
-  const int diag_lo =
-      known_diag && upper; // add one to the first row index pos if unit, upper
-  const int diag_hi =
-      known_diag &&
-      !upper; // subtract one from the last row index pos if unit, lower
+  const auto info = get_csr_triangular_solve_info(row_ptr, uplo, diag);
 
 #pragma omp parallel num_threads(par_sv.nthreads)
   {
@@ -1929,27 +2000,29 @@ void spsv_csr_parallel(sparse_hint_value_internal uplo,
                par_sv.level_ptr[level + 1] - par_sv.level_ptr[level] == 1) {
           auto ii = par_sv.level_ptr[level];
           auto i = par_sv.par_rows[ii];
-          if (upper) {
+          if (info.upper) {
             for (perflibs_int_t k = i; k > i - par_sv.chain_len[ii]; k--) {
-              const perflibs_int_t row_start_indx = row_ptr[k] - off + diag_lo;
+              const perflibs_int_t row_start_indx =
+                  row_ptr[k] - info.off + info.diag_lo;
               const perflibs_int_t row_end_indx =
-                  row_ptr[k + 1] - 1 - off - diag_hi;
+                  row_ptr[k + 1] - 1 - info.off - info.diag_hi;
               const perflibs_int_t diag_indx =
-                  known_diag ? row_start_indx - 1 : -1;
-              spsv_notrans_kernel<IsConj, T>(unit, diag_indx, k, off, col_indx,
-                                             vals, x, y, alpha, row_start_indx,
-                                             row_end_indx);
+                  info.known_diag ? row_start_indx - 1 : -1;
+              spsv_notrans_kernel<IsConj, T>(info.unit, diag_indx, k, info.off,
+                                             col_indx, vals, x, y, alpha,
+                                             row_start_indx, row_end_indx);
             }
           } else {
             for (perflibs_int_t k = i; k < i + par_sv.chain_len[ii]; k++) {
-              const perflibs_int_t row_start_indx = row_ptr[k] - off + diag_lo;
+              const perflibs_int_t row_start_indx =
+                  row_ptr[k] - info.off + info.diag_lo;
               const perflibs_int_t row_end_indx =
-                  row_ptr[k + 1] - 1 - off - diag_hi;
+                  row_ptr[k + 1] - 1 - info.off - info.diag_hi;
               const perflibs_int_t diag_indx =
-                  known_diag ? row_end_indx + 1 : -1;
-              spsv_notrans_kernel<IsConj, T>(unit, diag_indx, k, off, col_indx,
-                                             vals, x, y, alpha, row_start_indx,
-                                             row_end_indx);
+                  info.known_diag ? row_end_indx + 1 : -1;
+              spsv_notrans_kernel<IsConj, T>(info.unit, diag_indx, k, info.off,
+                                             col_indx, vals, x, y, alpha,
+                                             row_start_indx, row_end_indx);
             }
           }
 
@@ -1966,27 +2039,29 @@ void spsv_csr_parallel(sparse_hint_value_internal uplo,
 #pragma omp for
         for (perflibs_int_t ii = first; ii <= last; ii++) {
           auto i = par_sv.par_rows[ii];
-          if (upper) {
+          if (info.upper) {
             for (perflibs_int_t k = i; k > i - par_sv.chain_len[ii]; k--) {
-              const perflibs_int_t row_start_indx = row_ptr[k] - off + diag_lo;
+              const perflibs_int_t row_start_indx =
+                  row_ptr[k] - info.off + info.diag_lo;
               const perflibs_int_t row_end_indx =
-                  row_ptr[k + 1] - 1 - off - diag_hi;
+                  row_ptr[k + 1] - 1 - info.off - info.diag_hi;
               const perflibs_int_t diag_indx =
-                  known_diag ? row_start_indx - 1 : -1;
-              spsv_notrans_kernel<IsConj, T>(unit, diag_indx, k, off, col_indx,
-                                             vals, x, y, alpha, row_start_indx,
-                                             row_end_indx);
+                  info.known_diag ? row_start_indx - 1 : -1;
+              spsv_notrans_kernel<IsConj, T>(info.unit, diag_indx, k, info.off,
+                                             col_indx, vals, x, y, alpha,
+                                             row_start_indx, row_end_indx);
             }
           } else {
             for (perflibs_int_t k = i; k < i + par_sv.chain_len[ii]; k++) {
-              const perflibs_int_t row_start_indx = row_ptr[k] - off + diag_lo;
+              const perflibs_int_t row_start_indx =
+                  row_ptr[k] - info.off + info.diag_lo;
               const perflibs_int_t row_end_indx =
-                  row_ptr[k + 1] - 1 - off - diag_hi;
+                  row_ptr[k + 1] - 1 - info.off - info.diag_hi;
               const perflibs_int_t diag_indx =
-                  known_diag ? row_end_indx + 1 : -1;
-              spsv_notrans_kernel<IsConj, T>(unit, diag_indx, k, off, col_indx,
-                                             vals, x, y, alpha, row_start_indx,
-                                             row_end_indx);
+                  info.known_diag ? row_end_indx + 1 : -1;
+              spsv_notrans_kernel<IsConj, T>(info.unit, diag_indx, k, info.off,
+                                             col_indx, vals, x, y, alpha,
+                                             row_start_indx, row_end_indx);
             }
           }
         }
@@ -2006,6 +2081,125 @@ void spsv_csr_parallel(sparse_hint_value_internal uplo,
 };
 
 template <bool IsConj, typename T>
+void spsm_csr_parallel(sparse_hint_value_internal uplo,
+                       sparse_hint_value_internal diag, perflibs_int_t nrows,
+                       const perflibs_int_t *row_ptr,
+                       const perflibs_int_t *col_indx, const T *vals,
+                       const par_sv_t &par_sv, T *X,
+                       perflibs_int_t x_stride_row, perflibs_int_t x_stride_col,
+                       const T *Y, perflibs_int_t y_stride_row,
+                       perflibs_int_t y_stride_col, perflibs_int_t nrhs,
+                       T alpha) {
+
+  const auto info = get_csr_triangular_solve_info(row_ptr, uplo, diag);
+
+#pragma omp parallel num_threads(par_sv.nthreads)
+  {
+    const int tid = perflibs::sparse::omp::get_thread_num();
+
+    for (perflibs_int_t level = 0; level < par_sv.n_levels;) {
+
+      auto first = par_sv.level_ptr[level];
+      auto last = par_sv.level_ptr[level + 1] - 1;
+
+      // while there are multiple levels with only one degree of parallelism,
+      // avoid separate barrier for each level: just have a single thread do the
+      // work and have other threads wait at a barrier once
+      if (last - first == 0) {
+
+        while (tid == 0 && level < par_sv.n_levels &&
+               par_sv.level_ptr[level + 1] - par_sv.level_ptr[level] == 1) {
+          auto ii = par_sv.level_ptr[level];
+          auto i = par_sv.par_rows[ii];
+          if (info.upper) {
+            for (perflibs_int_t k = i; k > i - par_sv.chain_len[ii]; k--) {
+              const perflibs_int_t row_start_indx =
+                  row_ptr[k] - info.off + info.diag_lo;
+              const perflibs_int_t row_end_indx =
+                  row_ptr[k + 1] - 1 - info.off - info.diag_hi;
+              const perflibs_int_t diag_indx =
+                  info.known_diag ? row_start_indx - 1 : -1;
+              spsm_notrans_kernel<IsConj, T>(
+                  info.unit, diag_indx, k, info.off, col_indx, vals, X,
+                  x_stride_row, x_stride_col, Y, y_stride_row, y_stride_col,
+                  nrhs, alpha, row_start_indx, row_end_indx);
+            }
+          } else {
+            for (perflibs_int_t k = i; k < i + par_sv.chain_len[ii]; k++) {
+              const perflibs_int_t row_start_indx =
+                  row_ptr[k] - info.off + info.diag_lo;
+              const perflibs_int_t row_end_indx =
+                  row_ptr[k + 1] - 1 - info.off - info.diag_hi;
+              const perflibs_int_t diag_indx =
+                  info.known_diag ? row_end_indx + 1 : -1;
+              spsm_notrans_kernel<IsConj, T>(
+                  info.unit, diag_indx, k, info.off, col_indx, vals, X,
+                  x_stride_row, x_stride_col, Y, y_stride_row, y_stride_col,
+                  nrhs, alpha, row_start_indx, row_end_indx);
+            }
+          }
+
+          level++;
+        }
+
+        while (tid > 0 && level < par_sv.n_levels &&
+               par_sv.level_ptr[level + 1] - par_sv.level_ptr[level] == 1) {
+          level++;
+        }
+#pragma omp barrier
+      } else {
+
+#pragma omp for
+        for (perflibs_int_t ii = first; ii <= last; ii++) {
+          auto i = par_sv.par_rows[ii];
+          if (info.upper) {
+            for (perflibs_int_t k = i; k > i - par_sv.chain_len[ii]; k--) {
+              const perflibs_int_t row_start_indx =
+                  row_ptr[k] - info.off + info.diag_lo;
+              const perflibs_int_t row_end_indx =
+                  row_ptr[k + 1] - 1 - info.off - info.diag_hi;
+              const perflibs_int_t diag_indx =
+                  info.known_diag ? row_start_indx - 1 : -1;
+              spsm_notrans_kernel<IsConj, T>(
+                  info.unit, diag_indx, k, info.off, col_indx, vals, X,
+                  x_stride_row, x_stride_col, Y, y_stride_row, y_stride_col,
+                  nrhs, alpha, row_start_indx, row_end_indx);
+            }
+          } else {
+            for (perflibs_int_t k = i; k < i + par_sv.chain_len[ii]; k++) {
+              const perflibs_int_t row_start_indx =
+                  row_ptr[k] - info.off + info.diag_lo;
+              const perflibs_int_t row_end_indx =
+                  row_ptr[k + 1] - 1 - info.off - info.diag_hi;
+              const perflibs_int_t diag_indx =
+                  info.known_diag ? row_end_indx + 1 : -1;
+              spsm_notrans_kernel<IsConj, T>(
+                  info.unit, diag_indx, k, info.off, col_indx, vals, X,
+                  x_stride_row, x_stride_col, Y, y_stride_row, y_stride_col,
+                  nrhs, alpha, row_start_indx, row_end_indx);
+            }
+          }
+        }
+        level++;
+      }
+
+    } // levels
+  } // parallel
+
+  // Instead of solving (A^*)X = alpha*Y, we solve A(X^*) = (alpha*Y)^* and then
+  // take X^**
+  if constexpr (IsConj) {
+    for (perflibs_int_t i = 0; i < nrows; ++i) {
+      T *x_row = X + i * x_stride_row;
+      for (perflibs_int_t r = 0; r < nrhs; ++r) {
+        x_row[r * x_stride_col] =
+            perflibs::sparse::conj(x_row[r * x_stride_col]);
+      }
+    }
+  }
+};
+
+template <bool IsConj, typename T>
 void spsv_csr_vanilla_notrans(const perflibs_csr<T> &csr,
                               sparse_hint_value_internal uplo,
                               sparse_hint_value_internal diag, T *x, const T *y,
@@ -2014,36 +2208,33 @@ void spsv_csr_vanilla_notrans(const perflibs_csr<T> &csr,
   const auto row_ptr = csr.row_ptr_ptr;
   const auto col_indx = csr.col_indx_ptr;
   const auto vals = csr.vals_ptr;
-  const auto off = row_ptr[0];
-  const bool known_diag =
-      diag == PERFLIBS_DIAG_KNOWN_UNIT || diag == PERFLIBS_DIAG_KNOWN_NON_UNIT;
-  const bool unit =
-      diag == PERFLIBS_DIAG_KNOWN_UNIT || diag == PERFLIBS_DIAG_UNIT;
-  const bool upper = uplo == PERFLIBS_SHAPE_UPPER_TRIANGULAR;
-  const int diag_lo =
-      known_diag && upper; // add one to the first row index pos if unit, upper
-  const int diag_hi =
-      known_diag &&
-      !upper; // subtract one from the last row index pos if unit, lower
+  const auto info = get_csr_triangular_solve_info(row_ptr, uplo, diag);
   const auto nrows = csr.m;
 
-  if (upper) {
+  if (info.upper) {
     // UPPER TRIANGULAR
     for (perflibs_int_t i = nrows - 1; i >= 0; --i) {
-      const perflibs_int_t row_start_indx = row_ptr[i] - off + diag_lo;
-      const perflibs_int_t row_end_indx = row_ptr[i + 1] - 1 - off - diag_hi;
-      const perflibs_int_t diag_indx = known_diag ? row_start_indx - 1 : -1;
-      spsv_notrans_kernel<IsConj, T>(unit, diag_indx, i, off, col_indx, vals, x,
-                                     y, alpha, row_start_indx, row_end_indx);
+      const perflibs_int_t row_start_indx =
+          row_ptr[i] - info.off + info.diag_lo;
+      const perflibs_int_t row_end_indx =
+          row_ptr[i + 1] - 1 - info.off - info.diag_hi;
+      const perflibs_int_t diag_indx =
+          info.known_diag ? row_start_indx - 1 : -1;
+      spsv_notrans_kernel<IsConj, T>(info.unit, diag_indx, i, info.off,
+                                     col_indx, vals, x, y, alpha,
+                                     row_start_indx, row_end_indx);
     }
   } else {
     // LOWER TRIANGULAR
     for (perflibs_int_t i = 0; i < nrows; ++i) {
-      const perflibs_int_t row_start_indx = row_ptr[i] - off + diag_lo;
-      const perflibs_int_t row_end_indx = row_ptr[i + 1] - 1 - off - diag_hi;
-      const perflibs_int_t diag_indx = known_diag ? row_end_indx + 1 : -1;
-      spsv_notrans_kernel<IsConj, T>(unit, diag_indx, i, off, col_indx, vals, x,
-                                     y, alpha, row_start_indx, row_end_indx);
+      const perflibs_int_t row_start_indx =
+          row_ptr[i] - info.off + info.diag_lo;
+      const perflibs_int_t row_end_indx =
+          row_ptr[i + 1] - 1 - info.off - info.diag_hi;
+      const perflibs_int_t diag_indx = info.known_diag ? row_end_indx + 1 : -1;
+      spsv_notrans_kernel<IsConj, T>(info.unit, diag_indx, i, info.off,
+                                     col_indx, vals, x, y, alpha,
+                                     row_start_indx, row_end_indx);
     }
   }
 
@@ -2052,6 +2243,61 @@ void spsv_csr_vanilla_notrans(const perflibs_csr<T> &csr,
   if constexpr (IsConj) {
     for (perflibs_int_t i = 0; i < nrows; ++i) {
       x[i] = perflibs::sparse::conj(x[i]);
+    }
+  }
+};
+
+template <bool IsConj, typename T>
+void spsm_csr_vanilla_notrans(
+    const perflibs_csr<T> &csr, sparse_hint_value_internal uplo,
+    sparse_hint_value_internal diag, T *X, perflibs_int_t x_stride_row,
+    perflibs_int_t x_stride_col, const T *Y, perflibs_int_t y_stride_row,
+    perflibs_int_t y_stride_col, perflibs_int_t nrhs, T alpha) {
+
+  const auto row_ptr = csr.row_ptr_ptr;
+  const auto col_indx = csr.col_indx_ptr;
+  const auto vals = csr.vals_ptr;
+  const auto info = get_csr_triangular_solve_info(row_ptr, uplo, diag);
+  const auto nrows = csr.m;
+
+  if (info.upper) {
+    // UPPER TRIANGULAR
+    for (perflibs_int_t i = nrows - 1; i >= 0; --i) {
+      const perflibs_int_t row_start_indx =
+          row_ptr[i] - info.off + info.diag_lo;
+      const perflibs_int_t row_end_indx =
+          row_ptr[i + 1] - 1 - info.off - info.diag_hi;
+      const perflibs_int_t diag_indx =
+          info.known_diag ? row_start_indx - 1 : -1;
+      spsm_notrans_kernel<IsConj, T>(
+          info.unit, diag_indx, i, info.off, col_indx, vals, X, x_stride_row,
+          x_stride_col, Y, y_stride_row, y_stride_col, nrhs, alpha,
+          row_start_indx, row_end_indx);
+    }
+  } else {
+    // LOWER TRIANGULAR
+    for (perflibs_int_t i = 0; i < nrows; ++i) {
+      const perflibs_int_t row_start_indx =
+          row_ptr[i] - info.off + info.diag_lo;
+      const perflibs_int_t row_end_indx =
+          row_ptr[i + 1] - 1 - info.off - info.diag_hi;
+      const perflibs_int_t diag_indx = info.known_diag ? row_end_indx + 1 : -1;
+      spsm_notrans_kernel<IsConj, T>(
+          info.unit, diag_indx, i, info.off, col_indx, vals, X, x_stride_row,
+          x_stride_col, Y, y_stride_row, y_stride_col, nrhs, alpha,
+          row_start_indx, row_end_indx);
+    }
+  }
+
+  // Instead of solving (A^*)X = alpha*Y, we solve A(X^*) = (alpha*Y)^* and then
+  // take X^**
+  if constexpr (IsConj) {
+    for (perflibs_int_t i = 0; i < nrows; ++i) {
+      T *x_row = X + i * x_stride_row;
+      for (perflibs_int_t r = 0; r < nrhs; ++r) {
+        x_row[r * x_stride_col] =
+            perflibs::sparse::conj(x_row[r * x_stride_col]);
+      }
     }
   }
 };
@@ -2105,37 +2351,28 @@ void spsv_csr_vanilla_trans(const perflibs_csr<T> &csr,
   const auto row_ptr = csr.row_ptr_ptr;
   const auto col_indx = csr.col_indx_ptr;
   const auto vals = csr.vals_ptr;
-  const auto off = row_ptr[0];
   const auto nrows = csr.m;
-  const bool known_diag =
-      diag == PERFLIBS_DIAG_KNOWN_UNIT || diag == PERFLIBS_DIAG_KNOWN_NON_UNIT;
-  const bool unit =
-      diag == PERFLIBS_DIAG_KNOWN_UNIT || diag == PERFLIBS_DIAG_UNIT;
-  const bool upper = uplo == PERFLIBS_SHAPE_UPPER_TRIANGULAR;
-  const int diag_lo =
-      known_diag && upper; // add one to the first row index pos if unit, upper
-  const int diag_hi =
-      known_diag &&
-      !upper; // subtract one from the last row index pos if unit, lower
+  const auto info = get_csr_triangular_solve_info(row_ptr, uplo, diag);
 
   std::vector<T> sum(nrows, T(0.0));
 
-  if (upper) {
+  if (info.upper) {
     for (perflibs_int_t i = 0; i < nrows; ++i) {
-      auto row_start_indx = row_ptr[i] - off + diag_lo;
-      auto row_end_indx = row_ptr[i + 1] - 1 - off - diag_hi;
-      const perflibs_int_t diag_indx = known_diag ? row_start_indx - 1 : -1;
-      spsv_trans_kernel<IsConj, T>(unit, diag_indx, i, off, col_indx, vals, x,
-                                   y, alpha, &sum[0], row_start_indx,
+      auto row_start_indx = row_ptr[i] - info.off + info.diag_lo;
+      auto row_end_indx = row_ptr[i + 1] - 1 - info.off - info.diag_hi;
+      const perflibs_int_t diag_indx =
+          info.known_diag ? row_start_indx - 1 : -1;
+      spsv_trans_kernel<IsConj, T>(info.unit, diag_indx, i, info.off, col_indx,
+                                   vals, x, y, alpha, &sum[0], row_start_indx,
                                    row_end_indx);
     }
   } else {
     for (perflibs_int_t i = nrows - 1; i >= 0; --i) {
-      auto row_start_indx = row_ptr[i] - off + diag_lo;
-      auto row_end_indx = row_ptr[i + 1] - 1 - off - diag_hi;
-      const perflibs_int_t diag_indx = known_diag ? row_end_indx + 1 : -1;
-      spsv_trans_kernel<IsConj, T>(unit, diag_indx, i, off, col_indx, vals, x,
-                                   y, alpha, &sum[0], row_start_indx,
+      auto row_start_indx = row_ptr[i] - info.off + info.diag_lo;
+      auto row_end_indx = row_ptr[i + 1] - 1 - info.off - info.diag_hi;
+      const perflibs_int_t diag_indx = info.known_diag ? row_end_indx + 1 : -1;
+      spsv_trans_kernel<IsConj, T>(info.unit, diag_indx, i, info.off, col_indx,
+                                   vals, x, y, alpha, &sum[0], row_start_indx,
                                    row_end_indx);
     }
   }
@@ -2187,6 +2424,77 @@ void spsv_csr(const perflibs_csr<T> &csr, sparse_hint_value_internal trans,
     }
   }
 };
+
+template <typename T>
+void spsm_csr(const perflibs_csr<T> &csr, sparse_hint_value_internal trans,
+              sparse_hint_value_internal uplo, sparse_hint_value_internal diag,
+              T *X, perflibs_int_t x_stride_row, perflibs_int_t x_stride_col,
+              const T *Y, perflibs_int_t y_stride_row,
+              perflibs_int_t y_stride_col, perflibs_int_t nrhs, T alpha) {
+  // CSR transpose SpSM falls back to columnwise SpSV in call_spsm(). CSC
+  // transpose is remapped to notrans before reaching this kernel.
+  assert(trans != PERFLIBS_OPERATION_TRANS &&
+         trans != PERFLIBS_OPERATION_CONJTRANS);
+
+  if (perflibs::sparse::omp::is_mp && csr.par_sv.nthreads > 1 &&
+      !csr.par_sv.level_ptr.empty()) {
+    if (trans == PERFLIBS_OPERATION_NOTRANS ||
+        (!perflibs::sparse::is_complex_v<T> &&
+         trans == PERFLIBS_OPERATION_CONJNOTRANS)) {
+      spsm_csr_parallel<false>(uplo, diag, csr.m, csr.row_ptr_ptr,
+                               csr.col_indx_ptr, csr.vals_ptr, csr.par_sv, X,
+                               x_stride_row, x_stride_col, Y, y_stride_row,
+                               y_stride_col, nrhs, alpha);
+    } else if (perflibs::sparse::is_complex_v<T> &&
+               trans == PERFLIBS_OPERATION_CONJNOTRANS) {
+      spsm_csr_parallel<true>(uplo, diag, csr.m, csr.row_ptr_ptr,
+                              csr.col_indx_ptr, csr.vals_ptr, csr.par_sv, X,
+                              x_stride_row, x_stride_col, Y, y_stride_row,
+                              y_stride_col, nrhs, alpha);
+    }
+  } else {
+    if (trans == PERFLIBS_OPERATION_NOTRANS ||
+        (!perflibs::sparse::is_complex_v<T> &&
+         trans == PERFLIBS_OPERATION_CONJNOTRANS)) {
+      spsm_csr_vanilla_notrans<false>(csr, uplo, diag, X, x_stride_row,
+                                      x_stride_col, Y, y_stride_row,
+                                      y_stride_col, nrhs, alpha);
+    } else if (perflibs::sparse::is_complex_v<T> &&
+               trans == PERFLIBS_OPERATION_CONJNOTRANS) {
+      spsm_csr_vanilla_notrans<true>(csr, uplo, diag, X, x_stride_row,
+                                     x_stride_col, Y, y_stride_row,
+                                     y_stride_col, nrhs, alpha);
+    }
+  }
+};
+template void spsm_csr<float>(
+    const perflibs_csr<float> &csr, sparse_hint_value_internal trans,
+    sparse_hint_value_internal uplo, sparse_hint_value_internal diag, float *X,
+    perflibs_int_t x_stride_row, perflibs_int_t x_stride_col, const float *Y,
+    perflibs_int_t y_stride_row, perflibs_int_t y_stride_col,
+    perflibs_int_t nrhs, float alpha);
+template void spsm_csr<double>(
+    const perflibs_csr<double> &csr, sparse_hint_value_internal trans,
+    sparse_hint_value_internal uplo, sparse_hint_value_internal diag, double *X,
+    perflibs_int_t x_stride_row, perflibs_int_t x_stride_col, const double *Y,
+    perflibs_int_t y_stride_row, perflibs_int_t y_stride_col,
+    perflibs_int_t nrhs, double alpha);
+template void spsm_csr<std::complex<float>>(
+    const perflibs_csr<std::complex<float>> &csr,
+    sparse_hint_value_internal trans, sparse_hint_value_internal uplo,
+    sparse_hint_value_internal diag, std::complex<float> *X,
+    perflibs_int_t x_stride_row, perflibs_int_t x_stride_col,
+    const std::complex<float> *Y, perflibs_int_t y_stride_row,
+    perflibs_int_t y_stride_col, perflibs_int_t nrhs,
+    std::complex<float> alpha);
+template void spsm_csr<std::complex<double>>(
+    const perflibs_csr<std::complex<double>> &csr,
+    sparse_hint_value_internal trans, sparse_hint_value_internal uplo,
+    sparse_hint_value_internal diag, std::complex<double> *X,
+    perflibs_int_t x_stride_row, perflibs_int_t x_stride_col,
+    const std::complex<double> *Y, perflibs_int_t y_stride_row,
+    perflibs_int_t y_stride_col, perflibs_int_t nrhs,
+    std::complex<double> alpha);
 
 template void spsv_csr<float>(const perflibs_csr<float> &csr,
                               sparse_hint_value_internal trans,

@@ -339,6 +339,13 @@ void spsv_csr(const perflibs_csr<T> &csr, sparse_hint_value_internal trans,
               T *x, const T *y, T alpha);
 
 template <typename T>
+void spsm_csr(const perflibs_csr<T> &csr, sparse_hint_value_internal trans,
+              sparse_hint_value_internal uplo, sparse_hint_value_internal diag,
+              T *X, perflibs_int_t x_stride_row, perflibs_int_t x_stride_col,
+              const T *Y, perflibs_int_t y_stride_row,
+              perflibs_int_t y_stride_col, perflibs_int_t nrhs, T alpha);
+
+template <typename T>
 perflibs_status_t
 spmat_update_csr(perflibs_spmat_impl_t<T> *impl, perflibs_int_t n_updates,
                  const perflibs_int_t *row_indx, const perflibs_int_t *col_indx,

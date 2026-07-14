@@ -26,6 +26,7 @@ int main() {
   const perflibs_int_t n = SUPER_UPPER_N;
   const perflibs_int_t nsuper = SUPER_UPPER_NSUPER;
   const perflibs_int_t nparts = SUPER_UPPER_NPARTS;
+  const float alpha = 1.1f;
 
   const perflibs_int_t super_col_indx[SUPER_UPPER_NSUPER + 1] = {0,  3,  6, 9,
                                                                  12, 13, 15};
@@ -46,7 +47,10 @@ int main() {
                                     1,  16, 10, 7, 6, 3, 1};
 
   perflibs_spmat_t mat = NULL;
+  perflibs_spmat_t X = NULL;
+  perflibs_spmat_t Y = NULL;
   float *x = NULL;
+  float x_init[SUPER_UPPER_N] = {0};
 
   CHECK_STATUS(perflibs_spmat_create_supernodal_s(
       &mat, m, n, nsuper, nparts, super_row_ptr, super_col_indx, row_indx,
@@ -57,15 +61,31 @@ int main() {
   CHECK_TRUE(x != NULL, "malloc failed");
 
   CHECK_STATUS(perflibs_spsv_exec_s(PERFLIBS_SPARSE_OPERATION_NOTRANS, mat, x,
-                                    1.0f, rhs));
+                                    alpha, rhs));
 
   for (perflibs_int_t i = 0; i < n; ++i) {
     CHECK_TRUE(isfinite(x[i]), "solution[%lld] is not finite", test_i64(i));
-    CHECK_TRUE(fabsf(x[i] - 1.0f) <= 1.0e-5f,
-               "solution[%lld] got %.9g expected 1", test_i64(i), (double)x[i]);
+    CHECK_TRUE(fabsf(x[i] - alpha) <= 1.0e-5f,
+               "solution[%lld] got %.9g expected %.9g", test_i64(i),
+               (double)x[i], (double)alpha);
   }
 
+  // Next, double check the expected behaviour of an error being returned in
+  // the special case if we provide the wrong transpose hint for a supernodal
+  // matrix
+  CHECK_STATUS(perflibs_spmat_create_dense_s(&X, PERFLIBS_COL_MAJOR, n, 1, n,
+                                             x_init, 0));
+  CHECK_STATUS(
+      perflibs_spmat_create_dense_s(&Y, PERFLIBS_COL_MAJOR, n, 1, n, rhs, 0));
+  CHECK_STATUS(perflibs_spmat_hint(mat, PERFLIBS_SPARSE_HINT_SPSM_OPERATION,
+                                   PERFLIBS_SPARSE_OPERATION_NOTRANS));
+  CHECK_STATUS_EQ(
+      perflibs_spsm_exec_s(PERFLIBS_SPARSE_OPERATION_TRANS, mat, X, 1.0f, Y),
+      PERFLIBS_STATUS_EXECUTION_FAILURE);
+
   free(x);
+  CHECK_STATUS(perflibs_spmat_destroy(X));
+  CHECK_STATUS(perflibs_spmat_destroy(Y));
   CHECK_STATUS(perflibs_spmat_destroy(mat));
   return EXIT_SUCCESS;
 }

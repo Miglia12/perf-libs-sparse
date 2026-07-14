@@ -210,7 +210,7 @@ static void read_matrix_market_csr(const char *path, struct csr_matrix *csr,
 
   require(sscanf(line, "%lld %lld %lld", &m_ll, &n_ll, &nnz_ll) == 3,
           "bad size line");
-  require(m_ll > 0 && n_ll > 0 && nnz_ll >= 0, "invalid matrix dimensions");
+  require(m_ll > 0 && n_ll > 0 && nnz_ll > 0, "invalid matrix dimensions");
   require(m_ll <= max_armpl_int_value() && n_ll <= max_armpl_int_value(),
           "matrix dimensions exceed armpl_int_t range");
   require((unsigned long long)nnz_ll <=

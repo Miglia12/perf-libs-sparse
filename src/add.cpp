@@ -21,6 +21,10 @@ perflibs_status_t spadd_check_params(enum perflibs_sparse_hint_value transA,
                                      enum perflibs_sparse_hint_value beta,
                                      perflibs_spmat_t B, perflibs_spmat_t C) {
 
+  if (!have_compatible_matrix_datatypes(A, B, C)) {
+    return PERFLIBS_STATUS_INPUT_PARAMETER_ERROR;
+  }
+
   auto impl_A = reinterpret_cast<perflibs_spmat_impl_t<T> *>(A->impl);
   auto impl_B = reinterpret_cast<perflibs_spmat_impl_t<T> *>(B->impl);
   auto impl_C = reinterpret_cast<perflibs_spmat_impl_t<T> *>(C->impl);

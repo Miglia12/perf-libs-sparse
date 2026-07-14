@@ -76,6 +76,95 @@ perflibs_status_t call_spsv(perflibs_sparse_hint_value trans,
 };
 
 template <typename T>
+perflibs_status_t
+call_spsm_fallback(perflibs_sparse_hint_value trans,
+                   perflibs_spmat_impl_t<T> *impl, T *X,
+                   perflibs_int_t x_stride_row, perflibs_int_t x_stride_col,
+                   T alpha, const T *Y, perflibs_int_t y_stride_row,
+                   perflibs_int_t y_stride_col, perflibs_int_t nrhs) {
+  const bool unit_row_strides = x_stride_row == 1 && y_stride_row == 1;
+  perflibs::sparse::pod_vector<T> xbuf(unit_row_strides ? 0 : impl->n);
+  perflibs::sparse::pod_vector<T> ybuf(unit_row_strides ? 0 : impl->n);
+
+  for (perflibs_int_t i = 0; i < nrhs; ++i) {
+    T *x = X + i * x_stride_col;
+    const T *y = Y + i * y_stride_col;
+
+    if (unit_row_strides) {
+      auto ret = call_spsv(trans, impl, x, alpha, y);
+      if (ret != PERFLIBS_STATUS_SUCCESS) {
+        return ret;
+      }
+      continue;
+    }
+
+    for (perflibs_int_t j = 0; j < impl->n; ++j) {
+      ybuf[j] = y[j * y_stride_row];
+    }
+
+    auto ret = call_spsv(trans, impl, xbuf.data(), alpha, ybuf.data());
+    if (ret != PERFLIBS_STATUS_SUCCESS) {
+      return ret;
+    }
+
+    for (perflibs_int_t j = 0; j < impl->n; ++j) {
+      x[j * x_stride_row] = xbuf[j];
+    }
+  }
+
+  return PERFLIBS_STATUS_SUCCESS;
+};
+
+template <typename T>
+perflibs_status_t
+call_spsm(perflibs_sparse_hint_value trans, perflibs_spmat_impl_t<T> *impl,
+          T *X, perflibs_int_t x_stride_row, perflibs_int_t x_stride_col,
+          T alpha, const T *Y, perflibs_int_t y_stride_row,
+          perflibs_int_t y_stride_col, perflibs_int_t nrhs) {
+
+  // Early return for alpha == 0.
+  if (alpha == T(0)) {
+    for (perflibs_int_t col = 0; col < nrhs; ++col) {
+      T *x_col = X + col * x_stride_col;
+      for (perflibs_int_t row = 0; row < impl->n; ++row) {
+        x_col[row * x_stride_row] = T(0);
+      }
+    }
+    return PERFLIBS_STATUS_SUCCESS;
+  }
+
+  if (nrhs == 1) {
+    return call_spsm_fallback(trans, impl, X, x_stride_row, x_stride_col, alpha,
+                              Y, y_stride_row, y_stride_col, nrhs);
+  }
+
+  auto i_trans = (sparse_hint_value_internal)trans;
+  auto i_uplo = (sparse_hint_value_internal)impl->shape;
+  auto i_diag = (sparse_hint_value_internal)impl->diag;
+
+  if (impl->spmat_format == perflibs_format_coo ||
+      impl->spmat_format == perflibs_format_scs) {
+    convert(perflibs_format_csr, impl);
+  }
+
+  if (impl->spmat_format == perflibs_format_csr &&
+      trans == PERFLIBS_SPARSE_OPERATION_NOTRANS) {
+    spsm_csr<T>(impl->csr, i_trans, i_uplo, i_diag, X, x_stride_row,
+                x_stride_col, Y, y_stride_row, y_stride_col, nrhs, alpha);
+  } else if (impl->spmat_format == perflibs_format_csc &&
+             (trans == PERFLIBS_SPARSE_OPERATION_TRANS ||
+              trans == PERFLIBS_SPARSE_OPERATION_CONJTRANS)) {
+    spsm_csc<T>(impl->csc, i_trans, i_uplo, i_diag, X, x_stride_row,
+                x_stride_col, Y, y_stride_row, y_stride_col, nrhs, alpha);
+  } else {
+    return call_spsm_fallback<T>(trans, impl, X, x_stride_row, x_stride_col,
+                                 alpha, Y, y_stride_row, y_stride_col, nrhs);
+  }
+
+  return PERFLIBS_STATUS_SUCCESS;
+};
+
+template <typename T>
 perflibs_status_t spsv_exec_impl(perflibs_sparse_hint_value trans,
                                  perflibs_spmat_impl_t<T> *impl, T *x, T alpha,
                                  const T *y) {
@@ -171,10 +260,12 @@ template perflibs_status_t spsv_exec<std::complex<double>>(
     const std::complex<double> *y);
 
 template <typename T>
-perflibs_status_t spsm_exec(perflibs_sparse_hint_value trans,
-                            perflibs_spmat_top_t *A, perflibs_spmat_top_t *X,
-                            T alpha, perflibs_spmat_top_t *Y) {
-  auto ensure_dense_col_major = [](perflibs_spmat_impl_t<T> *impl,
+perflibs_status_t spsm_exec_impl(perflibs_sparse_hint_value trans,
+                                 perflibs_spmat_impl_t<T> *impl_A,
+                                 perflibs_spmat_top_t *X, T alpha,
+                                 perflibs_spmat_top_t *Y) {
+
+  auto ensure_compliant_dense = [](perflibs_spmat_impl_t<T> *impl,
                                    bool require_writable) {
     if (impl->spmat_format != perflibs_format_dense) {
       auto ret = convert(perflibs_format_dense, impl);
@@ -188,38 +279,20 @@ perflibs_status_t spsm_exec(perflibs_sparse_hint_value trans,
     if (require_writable && impl->dense.vals.empty()) {
       impl->dense.make_writable();
       impl->no_copy = false;
-    }
-
-    if (impl->dense.layout != PERFLIBS_COL_MAJOR) {
-      const auto m = impl->dense.m;
-      const auto n = impl->dense.n;
-      const auto lda = impl->dense.lda;
-      const auto *vals_ptr = impl->dense.vals_ptr;
-
-      std::vector<T> vals_col((size_t)m * (size_t)n);
-
-      // row-major -> col-major
-      for (perflibs_int_t i = 0; i < n; i++) {
-        for (perflibs_int_t j = 0; j < m; j++) {
-          vals_col[(size_t)i * (size_t)m + (size_t)j] = vals_ptr[j * lda + i];
-        }
-      }
-
-      impl->dense.vals = std::move(vals_col);
       impl->dense.vals_ptr = impl->dense.vals.data();
-      impl->dense.layout = PERFLIBS_COL_MAJOR;
-      impl->dense.lda = m;
-      impl->no_copy = false;
-    } else if (require_writable && impl->dense.vals.empty()) {
-      // Force writable storage even when already in column-major layout.
-      impl->dense.make_writable();
-      impl->dense.vals_ptr = impl->dense.vals.data();
-      impl->no_copy = false;
     } else if (!impl->dense.vals.empty()) {
       impl->dense.vals_ptr = impl->dense.vals.data();
     }
 
     return PERFLIBS_STATUS_SUCCESS;
+  };
+
+  auto dense_strides = [](const perflibs::sparse::perflibs_dense<T> &dense) {
+    const auto row_stride =
+        dense.layout == PERFLIBS_COL_MAJOR ? perflibs_int_t(1) : dense.lda;
+    const auto col_stride =
+        dense.layout == PERFLIBS_COL_MAJOR ? dense.lda : perflibs_int_t(1);
+    return std::pair<perflibs_int_t, perflibs_int_t>(row_stride, col_stride);
   };
 
   auto set_input_error = [](perflibs_spmat_impl_t<T> *impl, perflibs_int_t code,
@@ -229,8 +302,6 @@ perflibs_status_t spsm_exec(perflibs_sparse_hint_value trans,
     impl->error_handle.perflibs_error_code = code;
     impl->error_handle.err_msg = msg;
   };
-
-  auto impl_A = reinterpret_cast<perflibs_spmat_impl_t<T> *>(A->impl);
 
   // Reuse core SPSV parameter checks once per SpSM call.
   if (impl_A->spmat_format == perflibs_format_null) {
@@ -265,13 +336,13 @@ perflibs_status_t spsm_exec(perflibs_sparse_hint_value trans,
   }
 
   auto impl_X = reinterpret_cast<perflibs_spmat_impl_t<T> *>(X->impl);
-  auto ret = ensure_dense_col_major(impl_X, true);
+  auto ret = ensure_compliant_dense(impl_X, true);
   if (ret != PERFLIBS_STATUS_SUCCESS) {
     return ret;
   }
 
   auto impl_Y = reinterpret_cast<perflibs_spmat_impl_t<T> *>(Y->impl);
-  ret = ensure_dense_col_major(impl_Y, false);
+  ret = ensure_compliant_dense(impl_Y, false);
   if (ret != PERFLIBS_STATUS_SUCCESS) {
     return ret;
   }
@@ -306,36 +377,39 @@ perflibs_status_t spsm_exec(perflibs_sparse_hint_value trans,
     return PERFLIBS_STATUS_INPUT_PARAMETER_ERROR;
   }
 
-  // If exec uses a different transpose op than the one optimized for A,
-  // refresh optimization for the requested mode.
+  const auto nrhs = impl_X->n;
+  const auto [x_stride_row, x_stride_col] = dense_strides(impl_X->dense);
+  const auto [y_stride_row, y_stride_col] = dense_strides(impl_Y->dense);
+  return call_spsm<T>(trans, impl_A, impl_X->dense.vals.data(), x_stride_row,
+                      x_stride_col, alpha, impl_Y->dense.vals_ptr, y_stride_row,
+                      y_stride_col, nrhs);
+}
+
+template <typename T>
+perflibs_status_t spsm_exec(perflibs_sparse_hint_value trans,
+                            perflibs_spmat_top_t *A, perflibs_spmat_top_t *X,
+                            T alpha, perflibs_spmat_top_t *Y) {
+
+  auto impl_A = reinterpret_cast<perflibs_spmat_impl_t<T> *>(A->impl);
+
+  // Fall back to CSR if the hint used for optimization disagrees with the one
+  // used here for exec, and invalidate any parallel setup (if it was already
+  // CSR). That is, except for the supernodal format where the hint needs to
+  // match.
   if (trans != impl_A->userhint_spsm_op) {
-    ret = set_hint(impl_A, PERFLIBS_SPARSE_HINT_SPSM_OPERATION, trans);
-    if (ret != PERFLIBS_STATUS_SUCCESS) {
-      return ret;
+    if (impl_A->spmat_format == perflibs_format_supernodal) {
+      return PERFLIBS_STATUS_EXECUTION_FAILURE;
     }
-    ret = set_hint(impl_A, PERFLIBS_SPARSE_HINT_SPSV_OPERATION, trans);
-    if (ret != PERFLIBS_STATUS_SUCCESS) {
-      return ret;
+    if (impl_A->spmat_format != perflibs_format_identity &&
+        impl_A->spmat_format != perflibs_format_null) {
+      convert(perflibs_format_csr, impl_A);
+      impl_A->userhint_spsm_op = trans;
+      impl_A->userhint_spsv_op = trans;
     }
-    ret = spsv_optimize(impl_A);
-    if (ret != PERFLIBS_STATUS_SUCCESS) {
-      return ret;
-    }
+    impl_A->csr.par_sv = {};
   }
 
-  // For now, we just loop over SpSV
-  const auto nrhs = impl_X->n;
-  const auto ldX = impl_X->dense.lda;
-  const auto ldY = impl_Y->dense.lda;
-  for (perflibs_int_t i = 0; i < nrhs; i++) {
-    T *x = impl_X->dense.vals.data() + i * ldX;
-    const T *y = impl_Y->dense.vals_ptr + i * ldY;
-    ret = call_spsv<T>(trans, impl_A, x, alpha, y);
-    if (ret != PERFLIBS_STATUS_SUCCESS) {
-      return ret;
-    }
-  }
-  return PERFLIBS_STATUS_SUCCESS;
+  return spsm_exec_impl<T>(trans, impl_A, X, alpha, Y);
 }
 template perflibs_status_t
 spsm_exec<float>(perflibs_sparse_hint_value trans, perflibs_spmat_top_t *A,
@@ -647,7 +721,7 @@ perflibs_status_t spsv_optimize(perflibs_spmat_impl_t<T> *impl) {
            responsible for the setup. These entry points for this are defined in
            the CSR & CSC .cpp files, but they both call through to the same
            function which does most of the work, gen_parallel_decomp_sv_csx,
-           which is defined in sparse_sv.hpp.
+           which is defined in solve_parallel.hpp.
 
             The function which executes the parallel solve is defined in the CSR
            .cpp file, and this is where both CSR & CSC parallel executions end

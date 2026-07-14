@@ -20,6 +20,22 @@
 
 namespace perflibs::sparse {
 
+static inline bool is_typeless_placeholder(perflibs_const_spmat_t A) {
+  // Null and identity matrices are always template-typed as single precision.
+  if (A->datatype != PERFLIBS_DATATYPE_SINGLE) {
+    return false;
+  }
+
+  auto impl = reinterpret_cast<const perflibs_spmat_impl_t<float> *>(A->impl);
+  return is_special(impl->spmat_format);
+}
+
+static inline bool have_compatible_datatypes(perflibs_const_spmat_t A,
+                                             perflibs_const_spmat_t B) {
+  return is_typeless_placeholder(A) || is_typeless_placeholder(B) ||
+         A->datatype == B->datatype;
+}
+
 std::unique_ptr<perflibs_spmat_top_t> null_matrix(perflibs_int_t m,
                                                   perflibs_int_t n) {
 
@@ -61,6 +77,13 @@ std::unique_ptr<perflibs_spmat_top_t> identity_matrix(perflibs_int_t n) {
   return Atop;
 }
 
+bool have_compatible_matrix_datatypes(perflibs_const_spmat_t A,
+                                      perflibs_const_spmat_t B,
+                                      perflibs_const_spmat_t C) {
+  return have_compatible_datatypes(A, B) && have_compatible_datatypes(A, C) &&
+         have_compatible_datatypes(B, C);
+}
+
 template <typename T>
 perflibs_status_t scale_matrix(perflibs_sparse_hint_value trans, T alpha,
                                perflibs_spmat_t A) {
@@ -70,6 +93,9 @@ perflibs_status_t scale_matrix(perflibs_sparse_hint_value trans, T alpha,
 
   switch (impl_A->spmat_format) {
   case (perflibs_format_null):
+    if (trans != PERFLIBS_SPARSE_OPERATION_NOTRANS) {
+      std::swap(impl_A->m, impl_A->n);
+    }
     return PERFLIBS_STATUS_SUCCESS;
   case (perflibs_format_coo):
     impl_A->coo.scale_matrix(trans, alpha);

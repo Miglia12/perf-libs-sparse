@@ -147,6 +147,48 @@ static int test_hint_switch_and_rectangular_error() {
   return EXIT_SUCCESS;
 }
 
+static int test_spsm_hint_switch() {
+  const perflibs_int_t tri_row_ptr[] = {0, 1, 3, 4, 5};
+  const perflibs_int_t tri_col_indx[] = {0, 0, 1, 2, 3};
+  const double tri_vals[] = {2.0, 1.0, 3.0, 1.0, 1.0};
+  const double rhs_notrans[] = {2.0, 7.0, 3.0, 4.0, 4.0, 11.0, 5.0, 6.0};
+  const double expected_x[] = {1.0, 2.0, 3.0, 4.0, 2.0, 3.0, 5.0, 6.0};
+  double x_init[8] = {0.0};
+  perflibs_spmat_t triangular = NULL;
+  perflibs_spmat_t X = NULL;
+  perflibs_spmat_t Y = NULL;
+  double *x_out = NULL;
+  perflibs_int_t m = -1;
+  perflibs_int_t n = -1;
+
+  CHECK_STATUS(perflibs_spmat_create_csr_d(&triangular, 4, 4, tri_row_ptr,
+                                           tri_col_indx, tri_vals, 0));
+  CHECK_STATUS(perflibs_spmat_hint(triangular, PERFLIBS_SPARSE_HINT_STRUCTURE,
+                                   PERFLIBS_SPARSE_STRUCTURE_TRIANGULAR));
+  CHECK_STATUS(perflibs_spmat_create_dense_d(&X, PERFLIBS_COL_MAJOR, 4, 2, 4,
+                                             x_init, 0));
+  CHECK_STATUS(perflibs_spmat_create_dense_d(&Y, PERFLIBS_COL_MAJOR, 4, 2, 4,
+                                             rhs_notrans, 0));
+  CHECK_STATUS(perflibs_spsm_optimize(PERFLIBS_SPARSE_OPERATION_TRANS,
+                                      triangular, X, PERFLIBS_SPARSE_SCALAR_ANY,
+                                      Y));
+  CHECK_STATUS(perflibs_spsm_exec_d(PERFLIBS_SPARSE_OPERATION_NOTRANS,
+                                    triangular, X, 1.0, Y));
+
+  CHECK_STATUS(
+      perflibs_spmat_export_dense_d(X, PERFLIBS_COL_MAJOR, &m, &n, &x_out));
+  CHECK_TRUE(m == 4 && n == 2,
+             "unexpected hint-switch SpSM solution shape %lld x %lld",
+             test_i64(m), test_i64(n));
+  CHECK_DOUBLE_ARRAY(x_out, expected_x, 8, 1e-12);
+
+  free(x_out);
+  CHECK_STATUS(perflibs_spmat_destroy(triangular));
+  CHECK_STATUS(perflibs_spmat_destroy(X));
+  CHECK_STATUS(perflibs_spmat_destroy(Y));
+  return EXIT_SUCCESS;
+}
+
 int main() {
   if (test_identity_and_null_paths() != EXIT_SUCCESS) {
     return EXIT_FAILURE;
@@ -155,6 +197,9 @@ int main() {
     return EXIT_FAILURE;
   }
   if (test_hint_switch_and_rectangular_error() != EXIT_SUCCESS) {
+    return EXIT_FAILURE;
+  }
+  if (test_spsm_hint_switch() != EXIT_SUCCESS) {
     return EXIT_FAILURE;
   }
   return EXIT_SUCCESS;

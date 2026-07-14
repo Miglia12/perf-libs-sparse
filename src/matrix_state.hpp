@@ -22,6 +22,10 @@ std::unique_ptr<perflibs_spmat_top_t> null_matrix(perflibs_int_t m,
 
 std::unique_ptr<perflibs_spmat_top_t> identity_matrix(perflibs_int_t n);
 
+bool have_compatible_matrix_datatypes(perflibs_const_spmat_t A,
+                                      perflibs_const_spmat_t B,
+                                      perflibs_const_spmat_t C);
+
 template <typename T>
 perflibs_status_t scale_matrix(perflibs_sparse_hint_value trans, T alpha,
                                perflibs_spmat_t A);

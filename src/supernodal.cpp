@@ -875,6 +875,29 @@ perflibs_supernodal<std::complex<double>>::operator=(
     const perflibs_supernodal<std::complex<double>> &other);
 
 template <typename T>
+void copy_scaled(T *dst, const T *src, perflibs_int_t count, T alpha) {
+  // Fuse RHS scaling with the required copy so a later unit-alpha solve does
+  // not rescale accumulated separator-block contributions.
+  if (count <= 0) {
+    return;
+  }
+
+  if (alpha == T(1)) {
+    if (dst != src) {
+      std::memcpy(dst, src, sizeof(T) * count);
+    }
+  } else if (dst == src) {
+    for (perflibs_int_t i = 0; i < count; ++i) {
+      dst[i] *= alpha;
+    }
+  } else {
+    for (perflibs_int_t i = 0; i < count; ++i) {
+      dst[i] = alpha * src[i];
+    }
+  }
+}
+
+template <typename T>
 void spsv_supernodal_parallel_ut(
     perflibs_int_t m, T alpha,
     const std::vector<std::shared_ptr<perflibs_spmat_top_t>> &mats_diag,
@@ -884,7 +907,7 @@ void spsv_supernodal_parallel_ut(
   auto sep_dim =
       reinterpret_cast<perflibs_spmat_impl_t<T> *>(separator->impl)->m;
 
-  std::memcpy((void *)x, (void *)y, sizeof(T) * sep_dim);
+  copy_scaled(x, y, sep_dim, alpha);
 
   // Allocate a vector of vectors for the parallel separator block contributions
   std::vector<std::vector<T>> acc(perflibs::sparse::omp::get_max_threads(),
@@ -920,7 +943,7 @@ void spsv_supernodal_parallel_ut(
   }
 
   // Separator solve
-  spsv_exec(PERFLIBS_SPARSE_OPERATION_NOTRANS, separator.get(), x, alpha, x);
+  spsv_exec(PERFLIBS_SPARSE_OPERATION_NOTRANS, separator.get(), x, T(1), x);
 }
 
 template <typename T>
@@ -934,8 +957,7 @@ void spsv_trans_supernodal_parallel_ut(
   auto sep_dim =
       reinterpret_cast<perflibs_spmat_impl_t<T> *>(separator->impl)->m;
 
-  std::memcpy((void *)&x[sep_dim], (void *)&y[sep_dim],
-              sizeof(T) * (m - sep_dim));
+  copy_scaled(x + sep_dim, y + sep_dim, m - sep_dim, alpha);
 
   std::vector<size_t> offsets(mats_diag.size());
   offsets[0] = sep_dim;
@@ -956,7 +978,7 @@ void spsv_trans_supernodal_parallel_ut(
     spmv_exec<T>(trans, (T)-1.0, mats_sep[i].get(), x, (T)1.0, x + off);
 
     // Diagonal solves
-    spsv_exec(trans, mats_diag[i].get(), x + off, alpha, x + off);
+    spsv_exec(trans, mats_diag[i].get(), x + off, T(1), x + off);
   }
 }
 
@@ -970,7 +992,7 @@ void spsv_supernodal_parallel_lt(
   auto sep_dim =
       reinterpret_cast<perflibs_spmat_impl_t<T> *>(separator->impl)->m;
 
-  std::memcpy((void *)&x[sep_indx], (void *)&y[sep_indx], sizeof(T) * sep_dim);
+  copy_scaled(x + sep_indx, y + sep_indx, sep_dim, alpha);
 
   // Allocate a vector of vectors for the parallel separator block contributions
   std::vector<std::vector<T>> acc(perflibs::sparse::omp::get_max_threads(),
@@ -1006,7 +1028,7 @@ void spsv_supernodal_parallel_lt(
 
   // Separator solve
   spsv_exec(PERFLIBS_SPARSE_OPERATION_NOTRANS, separator.get(), x + sep_indx,
-            alpha, x + sep_indx);
+            T(1), x + sep_indx);
 }
 
 template <typename T>
@@ -1020,7 +1042,7 @@ void spsv_trans_supernodal_parallel_lt(
   auto sep_dim =
       reinterpret_cast<perflibs_spmat_impl_t<T> *>(separator->impl)->m;
 
-  std::memcpy((void *)&x[0], (void *)&y[0], sizeof(T) * (m - sep_dim));
+  copy_scaled(x, y, m - sep_dim, alpha);
 
   std::vector<size_t> offsets(mats_diag.size());
   for (size_t i = 1; i < offsets.size(); i++) {
@@ -1041,7 +1063,7 @@ void spsv_trans_supernodal_parallel_lt(
                  x + sep_indx, (T)1.0, x + off);
 
     // Diagonal solves
-    spsv_exec(trans, mats_diag[i].get(), x + off, alpha, x + off);
+    spsv_exec(trans, mats_diag[i].get(), x + off, T(1), x + off);
   }
 }
 
@@ -1053,7 +1075,7 @@ void spsv_supernodal_serial_ut(
     const std::shared_ptr<perflibs_spmat_top_t> separator, T *x, const T *y) {
   auto impl_sep = reinterpret_cast<perflibs_spmat_impl_t<T> *>(separator->impl);
   auto off = impl_sep->m;
-  std::memcpy((void *)x, (void *)y, sizeof(T) * off);
+  copy_scaled(x, y, off, alpha);
 
   // Diagonal solves
   for (size_t i = 0; i < mats_diag.size(); i++) {
@@ -1073,7 +1095,7 @@ void spsv_supernodal_serial_ut(
   }
 
   // Separator solve
-  spsv_exec(PERFLIBS_SPARSE_OPERATION_NOTRANS, separator.get(), x, alpha, x);
+  spsv_exec(PERFLIBS_SPARSE_OPERATION_NOTRANS, separator.get(), x, T(1), x);
 }
 
 template <typename T>
@@ -1085,7 +1107,7 @@ void spsv_trans_supernodal_serial_ut(
     perflibs_sparse_hint_value trans, T *x, const T *y) {
   auto impl_sep = reinterpret_cast<perflibs_spmat_impl_t<T> *>(separator->impl);
   auto off = impl_sep->m;
-  std::memcpy((void *)&x[off], (void *)&y[off], sizeof(T) * (m - off));
+  copy_scaled(x + off, y + off, m - off, alpha);
 
   // Separator solve
   spsv_exec(trans, separator.get(), x, alpha, y);
@@ -1101,7 +1123,7 @@ void spsv_trans_supernodal_serial_ut(
   // Diagonal solves
   for (size_t i = 0; i < mats_diag.size(); i++) {
     spsv_exec((perflibs_sparse_hint_value)trans, mats_diag[i].get(), x + off,
-              alpha, x + off);
+              T(1), x + off);
 
     off += reinterpret_cast<perflibs_spmat_impl_t<T> *>(mats_diag[i]->impl)->m;
   }
@@ -1115,8 +1137,7 @@ void spsv_supernodal_serial_lt(
     const std::shared_ptr<perflibs_spmat_top_t> separator, T *x, const T *y) {
   perflibs_int_t off = 0;
   auto impl_sep = reinterpret_cast<perflibs_spmat_impl_t<T> *>(separator->impl);
-  std::memcpy((void *)&x[sep_indx], (void *)&y[sep_indx],
-              sizeof(T) * impl_sep->m);
+  copy_scaled(x + sep_indx, y + sep_indx, impl_sep->m, alpha);
 
   // Diagonal solves
   for (size_t i = 0; i < mats_diag.size(); i++) {
@@ -1137,7 +1158,7 @@ void spsv_supernodal_serial_lt(
 
   // Separator solve
   spsv_exec(PERFLIBS_SPARSE_OPERATION_NOTRANS, separator.get(), x + sep_indx,
-            alpha, x + sep_indx);
+            T(1), x + sep_indx);
 }
 
 template <typename T>
@@ -1149,7 +1170,7 @@ void spsv_trans_supernodal_serial_lt(
     perflibs_sparse_hint_value trans, T *x, const T *y) {
   perflibs_int_t off = 0;
   auto impl_sep = reinterpret_cast<perflibs_spmat_impl_t<T> *>(separator->impl);
-  std::memcpy((void *)&x[0], (void *)&y[0], sizeof(T) * (m - impl_sep->m));
+  copy_scaled(x, y, m - impl_sep->m, alpha);
 
   // Separator solve
   spsv_exec(trans, separator.get(), x + sep_indx, alpha, y + sep_indx);
@@ -1165,7 +1186,7 @@ void spsv_trans_supernodal_serial_lt(
   off = 0;
   // Diagonal solves
   for (size_t i = 0; i < mats_diag.size(); i++) {
-    spsv_exec(trans, mats_diag[i].get(), x + off, alpha, x + off);
+    spsv_exec(trans, mats_diag[i].get(), x + off, T(1), x + off);
 
     off += reinterpret_cast<perflibs_spmat_impl_t<T> *>(mats_diag[i]->impl)->m;
   }

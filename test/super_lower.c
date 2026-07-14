@@ -24,6 +24,7 @@ int main() {
   const perflibs_int_t n = SUPER_LOWER_N;
   const perflibs_int_t nsuper = SUPER_LOWER_NSUPER;
   const perflibs_int_t nparts = SUPER_LOWER_NPARTS;
+  const float alpha = 1.1f;
 
   const perflibs_int_t super_col_indx[SUPER_LOWER_NSUPER + 1] = {0,  2,  4, 7,
                                                                  10, 13, 17};
@@ -56,12 +57,13 @@ int main() {
   CHECK_TRUE(x != NULL, "malloc failed");
 
   CHECK_STATUS(perflibs_spsv_exec_s(PERFLIBS_SPARSE_OPERATION_NOTRANS, mat, x,
-                                    1.0f, rhs));
+                                    alpha, rhs));
 
   for (perflibs_int_t i = 0; i < n; ++i) {
     CHECK_TRUE(isfinite(x[i]), "solution[%lld] is not finite", test_i64(i));
-    CHECK_TRUE(fabsf(x[i] - 1.0f) <= 1.0e-5f,
-               "solution[%lld] got %.9g expected 1", test_i64(i), (double)x[i]);
+    CHECK_TRUE(fabsf(x[i] - alpha) <= 1.0e-5f,
+               "solution[%lld] got %.9g expected %.9g", test_i64(i),
+               (double)x[i], (double)alpha);
   }
 
   free(x);

@@ -225,11 +225,104 @@ static int test_spsv_real_and_complex_spmv() {
   return EXIT_SUCCESS;
 }
 
+static int test_null_transpose_updates_shape() {
+  perflibs_spmat_t null_mat = perflibs_spmat_create_null(2, 3);
+  perflibs_int_t m = -1, n = -1;
+
+  CHECK_TRUE(null_mat != NULL, "null matrix creation failed");
+  CHECK_STATUS(
+      perflibs_sptranspose_exec_d(PERFLIBS_SPARSE_OPERATION_TRANS, null_mat));
+  CHECK_STATUS(perflibs_spmat_query(null_mat, NULL, &m, &n, NULL));
+  CHECK_INT_EQ(m, 3);
+  CHECK_INT_EQ(n, 2);
+
+  CHECK_STATUS(perflibs_spmat_destroy(null_mat));
+  return EXIT_SUCCESS;
+}
+
+static int test_spadd_null_fast_path_transposes_rectangular_input() {
+  perflibs_spmat_t a = perflibs_spmat_create_null(3, 2);
+  perflibs_spmat_t b = NULL;
+  perflibs_spmat_t c = perflibs_spmat_create_null(3, 2);
+  double *dense = NULL;
+  perflibs_int_t m = -1, n = -1;
+  const double expected[6] = {1.0, 4.0, 2.0, 5.0, 3.0, 6.0};
+
+  CHECK_TRUE(a != NULL, "left null matrix creation failed");
+  CHECK_TRUE(c != NULL, "result null matrix creation failed");
+  CHECK_STATUS(perflibs_spmat_create_dense_d(
+      &b, PERFLIBS_ROW_MAJOR, 2, 3, 3,
+      (const double[]){1.0, 2.0, 3.0, 4.0, 5.0, 6.0}, 0));
+
+  CHECK_STATUS(perflibs_spadd_exec_d(PERFLIBS_SPARSE_OPERATION_NOTRANS,
+                                     PERFLIBS_SPARSE_OPERATION_TRANS, 0.0, a,
+                                     1.0, b, c));
+  CHECK_STATUS(
+      perflibs_spmat_export_dense_d(c, PERFLIBS_ROW_MAJOR, &m, &n, &dense));
+  CHECK_INT_EQ(m, 3);
+  CHECK_INT_EQ(n, 2);
+  CHECK_DOUBLE_ARRAY(dense, expected, 6, 1e-12);
+
+  free(dense);
+  CHECK_STATUS(perflibs_spmat_destroy(a));
+  CHECK_STATUS(perflibs_spmat_destroy(b));
+  CHECK_STATUS(perflibs_spmat_destroy(c));
+  return EXIT_SUCCESS;
+}
+
+static int test_matrix_kernel_mismatched_datatypes_rejected() {
+  perflibs_spmat_t a_d = NULL;
+  perflibs_spmat_t b_s = NULL;
+  perflibs_spmat_t c_d = NULL;
+
+  CHECK_STATUS(
+      perflibs_spmat_create_dense_d(&a_d, PERFLIBS_ROW_MAJOR, 2, 2, 2,
+                                    (const double[]){1.0, 2.0, 3.0, 4.0}, 0));
+  CHECK_STATUS(perflibs_spmat_create_dense_s(
+      &b_s, PERFLIBS_ROW_MAJOR, 2, 2, 2,
+      (const float[]){1.0f, 0.0f, 0.0f, 1.0f}, 0));
+  CHECK_STATUS(
+      perflibs_spmat_create_dense_d(&c_d, PERFLIBS_ROW_MAJOR, 2, 2, 2,
+                                    (const double[]){0.0, 0.0, 0.0, 0.0}, 0));
+
+  CHECK_STATUS_EQ(perflibs_spmm_exec_d(PERFLIBS_SPARSE_OPERATION_NOTRANS,
+                                       PERFLIBS_SPARSE_OPERATION_NOTRANS, 1.0,
+                                       a_d, b_s, 0.0, c_d),
+                  PERFLIBS_STATUS_INPUT_PARAMETER_ERROR);
+  CHECK_STATUS_EQ(perflibs_spadd_exec_d(PERFLIBS_SPARSE_OPERATION_NOTRANS,
+                                        PERFLIBS_SPARSE_OPERATION_NOTRANS, 1.0,
+                                        a_d, 1.0, b_s, c_d),
+                  PERFLIBS_STATUS_INPUT_PARAMETER_ERROR);
+  CHECK_STATUS_EQ(perflibs_spelmm_exec_d(PERFLIBS_SPARSE_OPERATION_NOTRANS,
+                                         PERFLIBS_SPARSE_OPERATION_NOTRANS, 1.0,
+                                         a_d, b_s, 0.0, c_d),
+                  PERFLIBS_STATUS_INPUT_PARAMETER_ERROR);
+  CHECK_STATUS_EQ(perflibs_sddmm_exec_d(PERFLIBS_SPARSE_OPERATION_NOTRANS,
+                                        PERFLIBS_SPARSE_OPERATION_NOTRANS, 1.0,
+                                        a_d, b_s, 0.0, c_d),
+                  PERFLIBS_STATUS_INPUT_PARAMETER_ERROR);
+
+  CHECK_STATUS(perflibs_spmat_destroy(a_d));
+  CHECK_STATUS(perflibs_spmat_destroy(b_s));
+  CHECK_STATUS(perflibs_spmat_destroy(c_d));
+  return EXIT_SUCCESS;
+}
+
 int main() {
   if (test_spadd_spmm_spelmm_sddmm() != EXIT_SUCCESS) {
     return EXIT_FAILURE;
   }
   if (test_spsv_real_and_complex_spmv() != EXIT_SUCCESS) {
+    return EXIT_FAILURE;
+  }
+  if (test_null_transpose_updates_shape() != EXIT_SUCCESS) {
+    return EXIT_FAILURE;
+  }
+  if (test_spadd_null_fast_path_transposes_rectangular_input() !=
+      EXIT_SUCCESS) {
+    return EXIT_FAILURE;
+  }
+  if (test_matrix_kernel_mismatched_datatypes_rejected() != EXIT_SUCCESS) {
     return EXIT_FAILURE;
   }
   return EXIT_SUCCESS;
