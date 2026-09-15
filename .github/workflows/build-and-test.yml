@@ -42,10 +42,8 @@ jobs:
 
       - name: Install toolchain
         run: |
-          brew install llvm flang libomp arm-performance-libraries
+          brew install llvm flang arm-performance-libraries
           echo "$(brew --prefix llvm)/bin" >> "$GITHUB_PATH"
-          echo "OpenMP_ROOT=$(brew --prefix libomp)" >> "$GITHUB_ENV"
-          echo "LIBRARY_PATH=$(brew --prefix libomp)/lib" >> "$GITHUB_ENV"
 
       - name: Install Python dependencies
         run: python -m pip install mako
