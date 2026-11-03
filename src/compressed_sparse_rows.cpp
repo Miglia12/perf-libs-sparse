@@ -9,6 +9,11 @@
 #include "convert.hpp"
 #include "object_helpers.hpp"
 #include "types.hpp"
+#ifdef SPARSE_LEVEL_TRACE
+#include "level_trace.hpp"
+#include <cstdio>
+#include <cstdlib>
+#endif
 
 #include <algorithm>
 #include <atomic>
@@ -2100,9 +2105,21 @@ void spsv_csr_parallel(sparse_hint_value_internal uplo,
 
   [[maybe_unused]] const auto nthreads =
       std::min(par_sv.nthreads, perflibs::sparse::omp::get_max_threads());
+#ifdef SPARSE_LEVEL_TRACE
+  level_trace.nthreads = nthreads;
+  level_trace.row_len = (1 + 2 * (size_t)par_sv.n_levels + 31) / 32 * 32;
+  if (level_trace.ticks.size() < level_trace.row_len * nthreads) {
+    level_trace.ticks.resize(level_trace.row_len * nthreads);
+  }
+#endif
 #pragma omp parallel num_threads(nthreads)
   {
     const int tid = perflibs::sparse::omp::get_thread_num();
+#ifdef SPARSE_LEVEL_TRACE
+    uint64_t *trace_row = level_trace.ticks.data() + tid * level_trace.row_len;
+    perflibs_int_t step = 0;
+    trace_row[0] = level_trace_clock();
+#endif
 
     for (perflibs_int_t level = 0; level < par_sv.n_levels;) {
 
@@ -2151,10 +2168,21 @@ void spsv_csr_parallel(sparse_hint_value_internal uplo,
                par_sv.level_ptr[level + 1] - par_sv.level_ptr[level] == 1) {
           level++;
         }
+#ifdef SPARSE_LEVEL_TRACE
+        trace_row[1 + 2 * step] = level_trace_clock();
+#endif
 #pragma omp barrier
+#ifdef SPARSE_LEVEL_TRACE
+        trace_row[2 + 2 * step] = level_trace_clock();
+        step++;
+#endif
       } else {
 
+#ifdef SPARSE_LEVEL_TRACE
+#pragma omp for nowait
+#else
 #pragma omp for
+#endif
         for (perflibs_int_t ii = first; ii <= last; ii++) {
           auto i = par_sv.par_rows[ii];
           if (info.upper) {
@@ -2183,11 +2211,45 @@ void spsv_csr_parallel(sparse_hint_value_internal uplo,
             }
           }
         }
+#ifdef SPARSE_LEVEL_TRACE
+        trace_row[1 + 2 * step] = level_trace_clock();
+#pragma omp barrier
+        trace_row[2 + 2 * step] = level_trace_clock();
+        step++;
+#endif
         level++;
       }
 
     } // levels
+#ifdef SPARSE_LEVEL_TRACE
+    if (tid == 0) {
+      level_trace.steps = step;
+    }
+#endif
   } // parallel
+#ifdef SPARSE_LEVEL_TRACE
+  if (const char *path = std::getenv("SPARSE_LEVEL_TRACE")) {
+    FILE *out = std::fopen(path, "a");
+    if (out != nullptr) {
+      std::fprintf(out, "call %d upper %d nthreads %d steps %lld freq %llu\n",
+                   level_trace.call, (int)info.upper, level_trace.nthreads,
+                   (long long)level_trace.steps,
+                   (unsigned long long)level_trace_freq());
+      for (int t = 0; t < level_trace.nthreads; t++) {
+        const uint64_t *row =
+            level_trace.ticks.data() + t * level_trace.row_len;
+        std::fprintf(out, "%d start %llu\n", t, (unsigned long long)row[0]);
+        for (perflibs_int_t s = 0; s < level_trace.steps; s++) {
+          std::fprintf(out, "%d %lld %llu %llu\n", t, (long long)s,
+                       (unsigned long long)row[1 + 2 * s],
+                       (unsigned long long)row[2 + 2 * s]);
+        }
+      }
+      std::fclose(out);
+    }
+    level_trace.call++;
+  }
+#endif
 
   // Instead of solving (A^*)x = alpha*y, we solve A(x^*) = (alpha*y)^* and then
   // take x^**

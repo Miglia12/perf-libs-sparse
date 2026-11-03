@@ -46,6 +46,8 @@ option(SPARSE_ENABLE_INT64 "Build libsparse with 8-byte default INTEGER (ILP64) 
 option(SPARSE_ENABLE_ARM64EC "Enable Arm64EC ABI build (--target=arm64ec-pc-windows-msvc)" OFF)
 option(SPARSE_ENABLE_TESTS "Enable building of test executables" ON)
 option(SPARSE_ENABLE_SVE "Enable SVE kernels/specializations" OFF)
+option(SPARSE_ENABLE_LEVEL_TRACE "Record per-step barrier timestamps in the parallel CSR solve (diagnostic, never for timing)" OFF)
+option(SPARSE_ENABLE_THREAD_THROTTLE "Let spsv_optimize time the solve at p, p/2, ... and keep the fastest thread count (Arm's default); OFF runs the solve at exactly the requested thread count" OFF)
 option(SPARSE_USE_ARMPL "Use Arm Performance Libraries (requires env var ARMPL_DIR)" ON)
 
 # Make all binaries go to a bin directory - important for Windows testing of shared lib
@@ -409,6 +411,14 @@ set_source_files_properties(
 
 if(SPARSE_USE_ARMPL)
   target_compile_definitions(sparse_obj PRIVATE SPARSE_USE_ARMPL)
+endif()
+
+if(SPARSE_ENABLE_LEVEL_TRACE)
+  target_compile_definitions(sparse_obj PRIVATE SPARSE_LEVEL_TRACE)
+endif()
+
+if(NOT SPARSE_ENABLE_THREAD_THROTTLE)
+  target_compile_definitions(sparse_obj PRIVATE SPARSE_NO_THREAD_THROTTLE)
 endif()
 
 # On Windows, the public sparse header names ABI complex carrier types

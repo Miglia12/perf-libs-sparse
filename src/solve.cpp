@@ -1084,9 +1084,11 @@ perflibs_status_t spsv_optimize(perflibs_spmat_impl_t<T> *impl) {
         // throttling If we are in a parallel region, then do not, since we most
         // likely want all threads using the same number of nested threads (this
         // is true in the supernodal solve use case)
+#ifndef SPARSE_NO_THREAD_THROTTLE
         if (perflibs::sparse::omp::get_num_threads() == 1) {
           spsv_thread_throttle(impl);
         }
+#endif
       }
     }
   }
